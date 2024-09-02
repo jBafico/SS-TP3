@@ -1,4 +1,4 @@
-package com.example.myapp;
+package org.example.cim;
 
 import java.util.List;
 
