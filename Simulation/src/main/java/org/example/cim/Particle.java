@@ -1,9 +1,11 @@
 package org.example.cim;
 
 import lombok.*;
+import org.example.MovingParticle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -28,17 +30,17 @@ public class Particle {
         nearbyParticles = new ArrayList<>();
     }
 
-    public static List<Particle> generateRandomParticles(double L, int N, double r){
+    public static List<MovingParticle> generateRandomParticles(double L, int N, double r,double initialSpeed,double initialMass,Particle centralParticle){
         // Version adaptada, le paso startID del que quiero que arranque a computar,
-        List<Particle> particlesList = new ArrayList<>();
+        List<MovingParticle> particlesList = new ArrayList<>();
         Random random = new Random();
         double min = 0;
         double max = L;
         for (int i = 0; i < N ;){
             double x = min + (max - min) * random.nextDouble();
             double y = min + (max - min) * random.nextDouble();
-            if (particlesList.stream().noneMatch(p -> p.colidesWithPosition(x,y,r) )){
-                particlesList.add(new Particle(i,x,y,r));
+            if (particlesList.stream().noneMatch(p -> p.colidesWithPosition(x,y,r) || p.colidesWithParticle(centralParticle) )){
+                particlesList.add(new MovingParticle(i,x,y,r,initialSpeed,Math.random() * 2 * Math.PI ,initialMass ));
                 i++;
             }
         }
@@ -81,6 +83,21 @@ public class Particle {
 
     public boolean colidesWithPosition(double x, double y, double r){
         return Math.pow( getXCoordinate() - x, 2) + Math.pow(getYCoordinate() -  y , 2) <=  Math.pow( getRadius() + r, 2 );
+    }
+
+    public boolean colidesWithParticle(Particle p) {
+        return Math.pow( getXCoordinate() - p.getXCoordinate(), 2) + Math.pow(getYCoordinate() -  p.getYCoordinate() , 2) <=  Math.pow( getRadius() + p.getRadius(), 2 );
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if (other == null){
+            return false;
+        }
+        if (!(other instanceof Particle)){
+            return  false;
+        }
+        return ((Particle) other).id == this.id;
     }
 
 }

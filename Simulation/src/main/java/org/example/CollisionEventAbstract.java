@@ -17,5 +17,4 @@ public abstract class CollisionEventAbstract<TObject1, TObject2> {
         this.time = time;
     }
 
-    public abstract Optional<CollisionEventAbstract<TObject1, TObject2>> calculateCollision(TObject1 object1, TObject2 object2, double planeLength);
 }

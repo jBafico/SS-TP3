@@ -9,7 +9,6 @@ public class CollisionParticle extends CollisionEventAbstract<MovingParticle, Mo
         super(movingParticle1, movingParticle2, time);
     }
 
-    @Override
     public Optional<CollisionEventAbstract<MovingParticle, MovingParticle>> calculateCollision(MovingParticle movingParticle1, MovingParticle movingParticle2, double planeLength) {
         //First we calculate the velocity of the particles on the X and Y axis
         final double vx1 = movingParticle1.getVelocity() * Math.cos(movingParticle1.getAngle());

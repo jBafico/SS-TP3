@@ -8,7 +8,6 @@ public class CollisionWall extends CollisionEventAbstract<MovingParticle, Wall>{
         super(movingParticle, wall, time);
     }
 
-    @Override
     public Optional<CollisionEventAbstract<MovingParticle, Wall>> calculateCollision(MovingParticle movingParticle, Wall wall, double planeLength) {
         //First we calculate the velocity of the particle on the X and Y axis
         final double vx = movingParticle.getVelocity() * Math.cos(movingParticle.getAngle());
