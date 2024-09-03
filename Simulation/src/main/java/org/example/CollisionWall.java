@@ -25,7 +25,6 @@ public class CollisionWall extends CollisionEventAbstract<MovingParticle, Wall>{
         } else if (wall == Wall.TOP && vy > 0){ //VelocityY has to be positive for the particle to be able to hit the upper wall
             time = (planeLength - movingParticle.getRadius() - movingParticle.getYCoordinate()) / vy;
         }
-
         if (time == null) {
             return Optional.empty();
         }

@@ -29,16 +29,19 @@ public class Particle {
     }
 
     public static List<Particle> generateRandomParticles(double L, int N, double r){
+        // Version adaptada, le paso startID del que quiero que arranque a computar,
         List<Particle> particlesList = new ArrayList<>();
         Random random = new Random();
         double min = 0;
         double max = L;
-        for (int i = 0; i < N ; i++){
+        for (int i = 0; i < N ;){
             double x = min + (max - min) * random.nextDouble();
             double y = min + (max - min) * random.nextDouble();
-            particlesList.add(new Particle(i,x,y,r));
+            if (particlesList.stream().noneMatch(p -> p.colidesWithPosition(x,y,r) )){
+                particlesList.add(new Particle(i,x,y,r));
+                i++;
+            }
         }
-
         return particlesList;
     }
 
@@ -74,6 +77,10 @@ public class Particle {
         if(!nearbyParticles.contains(p.getId())){
             nearbyParticles.add(p.getId());
         }
+    }
+
+    public boolean colidesWithPosition(double x, double y, double r){
+        return Math.pow( getXCoordinate() - x, 2) + Math.pow(getYCoordinate() -  y , 2) <=  Math.pow( getRadius() + r, 2 );
     }
 
 }
