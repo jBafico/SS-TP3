@@ -7,16 +7,21 @@ import java.util.Optional;
 
 public class SimulationRunner {
 
-    private final Particle centralParticle;
+    private final MovingParticle obstacle;
     private List<MovingParticle> particleList;
 
     private final double planeLength;
 
 
-    public SimulationRunner(int amountOfParticles, double L, double initialSpeed, double initialMass, SimulationHistory simulationHistory) {
+    public SimulationRunner(int amountOfParticles, double L, double initialSpeed, double initialMass, SimulationHistory simulationHistory, boolean movingObstacle, double obstacleMass) {
         this.planeLength = L;
-        this.centralParticle = new Particle(amountOfParticles,planeLength , planeLength, 0.005);
-        this.particleList = Particle.generateRandomParticles(L,amountOfParticles,0.001,initialSpeed, initialMass, centralParticle);
+        if(movingObstacle){
+            this.obstacle = new MovingParticle(amountOfParticles, planeLength, planeLength, 0.005, 0, 0, obstacleMass);
+        }
+        else {
+            this.obstacle = new MovingParticle(amountOfParticles, planeLength, planeLength, 0.005, 0, 0, Double.MAX_VALUE);
+        }
+        this.particleList = Particle.generateRandomParticles(L,amountOfParticles,0.001,initialSpeed, initialMass, obstacle);
     }
 
 
@@ -29,9 +34,8 @@ public class SimulationRunner {
             //Calculamos tiempo minimo para colisionar con la pared o con las particulas
             double lowestCollisionWithWall = lowestTimeTillWallCollision(p);
             double lowestCollisionWithParticle = lowestTimeTillParticleCollision(p, 1);
-            if (lowestCollisionWithWall < lowestColisionTime){
-                lowestColisionTime = lowestCollisionWithWall;
-            }
+
+            lowestColisionTime = Math.min(lowestCollisionWithWall, lowestCollisionWithParticle);
 
 
 
