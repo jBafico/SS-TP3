@@ -1,5 +1,10 @@
 package org.example;
 
-public enum Wall {
-    TOP, BOTTOM, LEFT, RIGHT;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class Wall {
+    private double radius;
 }
