@@ -14,7 +14,8 @@ public class Main {
         double velocityModulus = 1;
         double particleMass = 1;
         Optional<Double> obstacleMass = Optional.empty();
+        int maxEvents = 500;
 
-        MDSimulation simulation = new MDSimulation(numberOfParticles, wallRadius, particleRadius, obstacleRadius, velocityModulus, particleMass, obstacleMass);
+        MDSimulation simulation = new MDSimulation(numberOfParticles, wallRadius, particleRadius, obstacleRadius, velocityModulus, particleMass, obstacleMass, maxEvents);
     }
 }
