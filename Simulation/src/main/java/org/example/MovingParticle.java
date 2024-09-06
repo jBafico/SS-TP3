@@ -11,53 +11,29 @@ import java.util.Optional;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
-public class MovingParticle {
-    private int id;
-    private double x;
-    private double y;
-    private double r;
-    private double vx;
-    private double vy;
-    private double mass;
-
-    public Optional<ParticleCollisionEvent> collidesWithParticle(MovingParticle p){
-        final double deltaX = x - p.getX();
-        final double deltaY = y - p.getY();
-        final double deltaVx = vx - p.getVx();
-        final double deltaVy = vy - p.getVy();
-
-        //Formulas of Class 3 slide 14
-        final double sigma = r + p.getR();
-        final double d = Math.pow(deltaVx * deltaX + deltaVy * deltaY, 2) - (deltaVx * deltaVx + deltaVy * deltaVy) * (deltaX * deltaX + deltaY * deltaY - sigma * sigma);
-
-        if (deltaVx * deltaX + deltaVy * deltaY >= 0 || d < 0) {
-            return Optional.empty();
-        }
-
-        final double time = -1 * (deltaVx * deltaX + deltaVy * deltaY + Math.sqrt(d)) / (deltaVx * deltaVx + deltaVy * deltaVy);
-        return Optional.of(new ParticleCollisionEvent(time, this, p));
+public class MovingParticle extends Particle {
+    public MovingParticle(int id, double x, double y, double r, double vx, double vy, double mass) {
+        super(id, x, y, r, vx, vy, mass);
     }
 
-    public Optional<WallCollisionEvent> collidesWithWall(Wall wall){
-        //TODO implement
+    @Override
+    public Optional<WallCollisionEvent> collidesWithWall(Wall wall) {
+        // todo
         return Optional.empty();
     }
 
-    //Advances paticle to timestep
-    public void update(double timestep){
-
+    @Override
+    public void update(double timestep) {
+        // todo
     }
 
-    //Modifies vx and vy for this particle and the particle that is colliding with
-    public void bounce(MovingParticle p){
-
+    @Override
+    public void bounce(Particle p) {
+        // todo
     }
 
-    //Modifies vx and vy for this particle
-    public void bounceWithWall(Wall wall){
-
+    @Override
+    public void bounceWithWall(Wall wall) {
+        // todo
     }
-
-
 }

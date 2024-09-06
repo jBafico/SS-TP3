@@ -3,7 +3,7 @@ package org.example;
 import lombok.Getter;
 
 @Getter
-public class WallCollisionEvent extends CollisionEvent{
+public class WallCollisionEvent extends CollisionEvent {
     private final MovingParticle movingParticle;
 
 
