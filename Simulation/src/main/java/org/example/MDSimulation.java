@@ -15,13 +15,54 @@ public class MDSimulation {
     private final PriorityQueue<CollisionEvent> collisionEvents = new PriorityQueue<>();
     private List<Particle> particleList;
     private Wall wall;
+    private int maxEvents;
 
-    public MDSimulation(int n, double wallRadius, double particleRadius, double obstacleRadius, double v0, double particleMass, Optional<Double> obstacleMass) {
+    public MDSimulation(int n, double wallRadius, double particleRadius, double obstacleRadius, double v0, double particleMass, Optional<Double> obstacleMass, int maxEvents) {
         particleList = generateRandomMovingParticles(n, wallRadius, particleRadius, v0, particleMass, obstacleRadius, obstacleMass);
-        ;
+        wall = new Wall(wallRadius);
+        this.maxEvents = maxEvents;
     }
-    public void start(FileWriter writer){
 
+    public void start (FileWriter writer){
+        int events = 0;
+        while (events < maxEvents){
+            events++;
+
+            // Update collision events
+            updateCollisionEvents();
+        }
+    }
+
+    private void updateCollisionEvents(){
+        for (Particle p : particleList){
+            // Check if particle collides with wall and add it
+            Optional<WallCollisionEvent> wallCollisionEvent = p.collidesWithWall(wall);
+            wallCollisionEvent.ifPresent(collisionEvents::add);
+
+            // Check if particle collides with other particles and add it
+            for (Particle q : particleList){
+                // If the particles are the same, skip
+                if (p.getId() == q.getId()){
+                    continue;
+                }
+
+                // Check if two particles collide
+                Optional<ParticleCollisionEvent> particleCollisionEvent = p.collidesWithParticle(q);
+
+                // If there is no collision, skip
+                if (particleCollisionEvent.isEmpty()) {
+                    continue;
+                }
+
+                // If the collision event is already in the list, skip
+                if (collisionEvents.contains(particleCollisionEvent.get())){
+                    continue;
+                }
+
+                // Add the collision event to the list
+                collisionEvents.add(particleCollisionEvent.get());
+            }
+        }
     }
 
     private List<Particle> generateRandomMovingParticles(int n, double wallRadius, double particleRadius, double v0, double particleMass, double obstacleRadius, Optional<Double> obstacleMass){
