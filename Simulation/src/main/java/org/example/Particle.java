@@ -2,11 +2,13 @@ package org.example;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
+@Setter
 public abstract class Particle {
     private int id;
     private double x;
@@ -37,6 +39,7 @@ public abstract class Particle {
 
     // Returns the event of collision with the wall if present
     public abstract Optional<WallCollisionEvent> collidesWithWall(Wall wall);
+
 
     // Advances paticle to timestep
     public abstract void update(double timestep);
