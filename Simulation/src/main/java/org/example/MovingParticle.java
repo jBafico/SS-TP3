@@ -67,7 +67,19 @@ public class MovingParticle extends Particle {
     }
 
     @Override
-    public void bounceWithWall(Wall wall) {
-        // todo
+    public void bounceWithWall(Wall wall) { // The particle is already at the collision point
+        //First we calculate the distance from the center (0,0)
+        final double distance= Math.sqrt(Math.pow(getX(),2) + Math.pow(getY(),2));
+
+        //We calculate the collision normal
+        final double nx= getX()/distance;
+        final double ny= getY()/distance;
+
+        //We calculate the dot product
+        final double dotProduct= getVx()*nx+getVy()*ny;
+
+        //Update the velocity
+        setVx(getVx()-(2*dotProduct*nx));
+        setVy(getVy()-(2*dotProduct*ny));
     }
 }
