@@ -58,4 +58,13 @@ public abstract class Particle {
 
     // Modifies vx and vy for this particle
     public abstract void bounceWithWall(Wall wall);
+
+
+    //We only want to say that two particles are equal if they have the same id
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Particle that)) return false;
+        return id == that.getId();
+    }
 }

@@ -135,7 +135,7 @@ public class MDSimulation {
 
             // Check if new particle collides with any other particle in the list
             boolean collides = false;
-            for (Particle p : generatedParticles){ //TODO fix this logic
+            for (Particle p : generatedParticles){
                 if (newParticle.isCollidingWithParticle(p)){
                     collides=true;
                     continue;
