@@ -49,7 +49,21 @@ public class MovingParticle extends Particle {
 
     @Override
     public void bounce(Particle p) {
-        // todo
+        final double deltaX=p.getX()- getX();
+        final double deltaY=p.getY()- getY();
+        final double deltaVx=p.getVx()- getVx();
+        final double deltaVy=p.getVy()- getVy();
+        final double sigma= p.getR()+ getR();
+
+        //Papers formulas on Page 3
+        final double j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
+        final double jx = j * deltaX / sigma;
+        final double jy = j * deltaY / sigma;
+
+        this.setVx(getVx() + jx / getMass());
+        this.setVy(getVy() + jy / getMass());
+        p.setX(p.getX() - jx / p.getMass());
+        p.setY(p.getY() - jy / p.getMass());
     }
 
     @Override
