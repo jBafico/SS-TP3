@@ -86,8 +86,8 @@ public class MDSimulation {
 
             // Check if new particle collides with any other particle in the list
             boolean collides = false;
-            for (Particle p : generatedParticles){ //TODO usar otro metodo para revisar si las particulas estan una encima de la otra
-                if (newParticle.collidesWithParticle(p).isPresent()){
+            for (Particle p : generatedParticles){ //TODO fix this logic
+                if (newParticle.isCollidingWithParticle(p)){
                     continue;
                 }
             }

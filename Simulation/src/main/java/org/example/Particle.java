@@ -37,6 +37,15 @@ public abstract class Particle {
         return Optional.of(new ParticleCollisionEvent(time, this, p));
     }
 
+    public boolean isCollidingWithParticle(Particle p){
+        final double deltaX = x - p.getX();
+        final double deltaY = y - p.getY();
+        final double sigma = r + p.getR();
+        final double deltaPosition= Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+        return (deltaPosition-sigma<0);
+    }
+
     // Returns the event of collision with the wall if present
     public abstract Optional<WallCollisionEvent> collidesWithWall(Wall wall);
 
