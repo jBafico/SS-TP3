@@ -27,4 +27,9 @@ public class ParticleCollisionEvent extends CollisionEvent{
         result = 31 * result + particle2.hashCode();  // Combine with hash of particle2
     return result;
 }
+
+    @Override
+    public boolean involvesParticle(Particle particle) {
+        return particle1.equals(particle) || particle2.equals(particle);
+    }
 }

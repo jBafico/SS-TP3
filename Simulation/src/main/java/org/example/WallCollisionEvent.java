@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class WallCollisionEvent extends CollisionEvent {
-    private final MovingParticle movingParticle;
+    private final Particle movingParticle;
 
     public WallCollisionEvent(double time, MovingParticle movingParticle) {
         super(time);
@@ -23,5 +23,10 @@ public class WallCollisionEvent extends CollisionEvent {
         int result = Double.hashCode(getTime());  // Hash code of the time field
         result = 31 * result + movingParticle.hashCode();  // Combine with hash of movingParticle
         return result;
+    }
+
+    @Override
+    public boolean involvesParticle(Particle particle) {
+        return movingParticle.equals(particle);
     }
 }

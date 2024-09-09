@@ -20,4 +20,6 @@ public abstract class CollisionEvent implements Comparable<CollisionEvent> {
 
     @Override
     public abstract int hashCode();
+
+    public abstract boolean involvesParticle(Particle particle);
 }

@@ -6,10 +6,7 @@ import lombok.Setter;
 
 import javax.management.relation.RoleStatus;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class MDSimulation {
     private final PriorityQueue<CollisionEvent> collisionEvents = new PriorityQueue<>();
@@ -25,19 +22,65 @@ public class MDSimulation {
 
     public void start (FileWriter writer){
         int events = 0;
+        double simulationTime = 0;
         while (events < maxEvents){
             events++;
-
             // Update collision events
-            updateCollisionEvents();
+            updateCollisionEvents(simulationTime);
+
+            //We get the first collision event
+            if(!collisionEvents.isEmpty()){
+                CollisionEvent collisionEvent= collisionEvents.poll();
+                double eventTime=collisionEvent.getTime();
+
+                //Update the position of all particles till the time of the event
+                for (Particle p: particleList){
+                    p.update(eventTime-simulationTime);
+                }
+
+                //Now that we already moved all the particles, we resolve the collision that modifies the velocity of the ones involved
+                //If the collision is a WallCollisionEvent
+                if(collisionEvent instanceof WallCollisionEvent){
+                    Particle particle=((WallCollisionEvent) collisionEvent).getMovingParticle();
+                    //we modify the velocity
+                    particle.bounceWithWall(wall);
+
+                    //Now we need to delete events that contain the particle
+                    deleteCollisionEvents(particle);
+
+                }else{//if the collision is a particleCollisionEvent
+                    Particle particle1=((ParticleCollisionEvent) collisionEvent).getParticle1();
+                    Particle particle2=((ParticleCollisionEvent) collisionEvent).getParticle2();
+                    //we modify the velocity
+                    particle1.bounce(particle2);
+
+                    //Now we need to delete events that contain both particles
+                    deleteCollisionEvents(particle1);
+                    deleteCollisionEvents(particle2);
+                }
+
+                //lastly we update the simulation time
+                simulationTime += eventTime;
+            }
         }
     }
 
-    private void updateCollisionEvents(){
+    //I added simulationTime so that the new events are calculated with the simulationTime included
+    private void updateCollisionEvents(double simulationTime){
         for (Particle p : particleList){
             // Check if particle collides with wall and add it
             Optional<WallCollisionEvent> wallCollisionEvent = p.collidesWithWall(wall);
-            wallCollisionEvent.ifPresent(collisionEvents::add);
+            if(wallCollisionEvent.isPresent()){
+                //we add the current simulation time to the time till collision because the position of the particles have been updated
+                CollisionEvent collisionEvent = wallCollisionEvent.get();
+                collisionEvent.setTime(simulationTime+collisionEvent.getTime());
+                if (!collisionEvents.contains(collisionEvent)){
+                    collisionEvents.add(collisionEvent);
+                }
+
+            }
+
+
 
             // Check if particle collides with other particles and add it
             for (Particle q : particleList){
@@ -53,6 +96,7 @@ public class MDSimulation {
                 if (particleCollisionEvent.isEmpty()) {
                     continue;
                 }
+                particleCollisionEvent.get().setTime(simulationTime+particleCollisionEvent.get().getTime());
 
                 // If the collision event is already in the list, skip
                 if (collisionEvents.contains(particleCollisionEvent.get())){
@@ -63,6 +107,11 @@ public class MDSimulation {
                 collisionEvents.add(particleCollisionEvent.get());
             }
         }
+    }
+
+    //Method used to delete events of particle p from the collision event priority queue
+    private void deleteCollisionEvents(Particle p){
+        collisionEvents.removeIf(collisionEvent -> collisionEvent.involvesParticle(p));
     }
 
     private List<Particle> generateRandomMovingParticles(int n, double wallRadius, double particleRadius, double v0, double particleMass, double obstacleRadius, Optional<Double> obstacleMass){
@@ -88,10 +137,10 @@ public class MDSimulation {
             boolean collides = false;
             for (Particle p : generatedParticles){ //TODO fix this logic
                 if (newParticle.isCollidingWithParticle(p)){
+                    collides=true;
                     continue;
                 }
             }
-
             // If the new particle does not collide with any other particle, add it to the list
             if (!collides){
                 generatedParticles.add(newParticle);
