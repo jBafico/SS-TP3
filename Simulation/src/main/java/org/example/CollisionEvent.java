@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public abstract class CollisionEvent implements Comparable<CollisionEvent> {
+    private String collisionType;
     private double time;
 
     @Override

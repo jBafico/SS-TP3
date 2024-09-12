@@ -7,7 +7,7 @@ public class WallCollisionEvent extends CollisionEvent {
     private final Particle movingParticle;
 
     public WallCollisionEvent(double time, MovingParticle movingParticle) {
-        super(time);
+        super("wall",time);
         this.movingParticle = movingParticle;
     }
 
