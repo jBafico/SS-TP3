@@ -1,5 +1,5 @@
 {
-  "numberOfParticles": 10,
+  "numberOfParticles": 5,
   "wallRadius": 50,
   "particleRadius": 4,
   "obstacleRadius": 3,
