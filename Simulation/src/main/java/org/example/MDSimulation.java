@@ -38,6 +38,8 @@ public class MDSimulation {
                     p.update(eventTime-simulationTime);
                 }
 
+                //Persisto estado del sistema
+
                 //Now that we already moved all the particles, we resolve the collision that modifies the velocity of the ones involved
                 //If the collision is a WallCollisionEvent
                 if(collisionEvent instanceof WallCollisionEvent){
@@ -79,8 +81,6 @@ public class MDSimulation {
                 }
 
             }
-
-
 
             // Check if particle collides with other particles and add it
             for (Particle q : particleList){
@@ -138,7 +138,7 @@ public class MDSimulation {
             for (Particle p : generatedParticles){
                 if (newParticle.isCollidingWithParticle(p)){
                     collides=true;
-                    continue;
+                    break;
                 }
             }
             // If the new particle does not collide with any other particle, add it to the list
