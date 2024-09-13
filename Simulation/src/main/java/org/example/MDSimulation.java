@@ -73,7 +73,7 @@ public class MDSimulation {
                 }
 
                 //lastly we update the simulation time
-                simulationTime += eventTime;
+                simulationTime = eventTime;
             }
         }
     }
@@ -133,7 +133,7 @@ public class MDSimulation {
         if (obstacleMass.isPresent()) { // If it has mass, it is a MovingParticle
             middleObstacle = new MovingParticle(0, 0, 0, obstacleRadius, 0, 0, obstacleMass.get());
         } else { // If it does not have mass, it is a StaticParticle
-            middleObstacle = new StaticParticle(0, 0, 0, obstacleRadius);
+            middleObstacle = new MovingParticle(0, 0, 0, obstacleRadius, 0, 0, Double.MAX_VALUE);
         }
         generatedParticles.add(middleObstacle);
 
