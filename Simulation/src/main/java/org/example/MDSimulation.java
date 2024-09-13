@@ -96,7 +96,7 @@ public class MDSimulation {
             // Check if particle collides with other particles and add it
             for (Particle q : particleList) {
                 // If the particles are the same, skip
-                if (p.getId() == q.getId()) {
+                if (p.getId() == q.getId() || p.getId()==0) {
                     continue;
                 }
 

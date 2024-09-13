@@ -56,14 +56,20 @@ public class MovingParticle extends Particle {
         final double sigma= p.getR()+ getR();
 
         //Papers formulas on Page 3
-        final double j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
+        double j;
+        if(p.getMass()!=Double.POSITIVE_INFINITY){
+            j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
+        }
+        else {
+            j= (2 * getMass() * (deltaVx* deltaX + deltaVy * deltaY))/(sigma * ((getMass()/p.getMass()) + 1));
+        }
         final double jx = j * deltaX / sigma;
         final double jy = j * deltaY / sigma;
 
         this.setVx(getVx() + jx / getMass());
         this.setVy(getVy() + jy / getMass());
-        p.setX(p.getX() - jx / p.getMass());
-        p.setY(p.getY() - jy / p.getMass());
+        p.setVx(p.getX() - jx / p.getMass());
+        p.setVy(p.getY() - jy / p.getMass());
     }
 
     @Override
