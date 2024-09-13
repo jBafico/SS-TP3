@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.management.relation.RoleStatus;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class MDSimulation {
@@ -44,7 +45,7 @@ public class MDSimulation {
                 try {
                     //Persisto estado del sistema
                     var data = mapper.writeValueAsString(new SimulationSnapshot(particleList, collisionEvent));
-                    writer.write(data + ",");
+                    writer.write(data);
                 } catch (Exception e){
                     e.printStackTrace();
                     System.exit(1);
@@ -75,7 +76,17 @@ public class MDSimulation {
                 //lastly we update the simulation time
                 simulationTime = eventTime;
             }
+            if (events != maxEvents) {
+                try {
+                    writer.write(",");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
         }
+
+
     }
 
     //I added simulationTime so that the new events are calculated with the simulationTime included

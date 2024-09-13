@@ -2,9 +2,9 @@
   "numberOfParticles": 5,
   "wallRadius": 50,
   "particleRadius": 4,
-  "obstacleRadius": 3,
+  "obstacleRadius": 6,
   "velocityModulus": 1,
   "particleMass": 1,
-  "obstacleMass": null,
+  "obstacleMass": 1,
   "maxEvents": 100
 }
