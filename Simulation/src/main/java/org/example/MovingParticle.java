@@ -18,33 +18,37 @@ public class MovingParticle extends Particle {
 
     @Override
     public Optional<WallCollisionEvent> collidesWithWall(Wall wall) {
-        //we are going to use the cuadratic formula to calculate the collision time
-        // Vx^2 + Vy^2
-        final double a= Math.pow(getVx(), 2) + Math.pow(getVy(), 2);
+        if(getMass()!=Double.POSITIVE_INFINITY) {
+            //we are going to use the cuadratic formula to calculate the collision time
+            // Vx^2 + Vy^2
+            final double a= Math.pow(getVx(), 2) + Math.pow(getVy(), 2);
 
-        // (2*x*Vx)+(2*y*Vy)
-        final double b= (2*getX()*getVx())+(2*getY()*getVy());
+            // (2*x*Vx)+(2*y*Vy)
+            final double b= (2*getX()*getVx())+(2*getY()*getVy());
 
-        // x^2+y^2+(R-r)^2
-        final double c=Math.pow(getX(), 2) + Math.pow(getY(), 2) - Math.pow(wall.getRadius()- getR(), 2);
+            // x^2+y^2+(R-r)^2
+            final double c=Math.pow(getX(), 2) + Math.pow(getY(), 2) - Math.pow(wall.getRadius()- getR(), 2);
 
-        // Cuadratic formula
-        final double det=Math.sqrt(Math.pow(b,2) - 4*a*c);
-        final double t1= (((-1)*b)+det)/(2*a);
-        final double t2= (((-1)*b)-det)/(2*a);
+            // Cuadratic formula
+            final double det=Math.sqrt(Math.pow(b,2) - 4*a*c);
+            final double t1= (((-1)*b)+det)/(2*a);
+            final double t2= (((-1)*b)-det)/(2*a);
 
-        if(t1>0 && t2<=0){
-            return Optional.of(new WallCollisionEvent(t1, this));
-        }else if(t1<=0 && t2>0){
-            return Optional.of(new WallCollisionEvent(t2, this));
+            if(t1>0 && t2<=0){
+                return Optional.of(new WallCollisionEvent(t1, this));
+            }else if(t1<=0 && t2>0){
+                return Optional.of(new WallCollisionEvent(t2, this));
+            }
         }
         return Optional.empty();
     }
 
     @Override
     public void update(double timestep) { //You have to pass the DeltaTimestep between events
-        setX(getX() + (getVx()*timestep));
-        setY(getY() + (getVy()*timestep));
+        if(getMass()!=Double.POSITIVE_INFINITY){
+            setX(getX() + (getVx()*timestep));
+            setY(getY() + (getVy()*timestep));
+        }
     }
 
     @Override
@@ -68,8 +72,10 @@ public class MovingParticle extends Particle {
 
         this.setVx(getVx() + jx / getMass());
         this.setVy(getVy() + jy / getMass());
-        p.setVx(p.getX() - jx / p.getMass());
-        p.setVy(p.getY() - jy / p.getMass());
+        if(p.getMass()!=Double.POSITIVE_INFINITY){
+            p.setVx(p.getX() - jx / p.getMass());
+            p.setVy(p.getY() - jy / p.getMass());
+        }
     }
 
     @Override

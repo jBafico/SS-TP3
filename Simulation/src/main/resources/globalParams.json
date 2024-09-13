@@ -5,6 +5,5 @@
   "obstacleRadius": 6,
   "velocityModulus": 1,
   "particleMass": 1,
-  "obstacleMass": 1,
   "maxEvents": 100
 }

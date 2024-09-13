@@ -66,7 +66,12 @@ public class MDSimulation {
                     Particle particle1 = ((ParticleCollisionEvent) collisionEvent).getParticle1();
                     Particle particle2 = ((ParticleCollisionEvent) collisionEvent).getParticle2();
                     //we modify the velocity
-                    particle1.bounce(particle2);
+                    if(particle1.getMass()!=Double.POSITIVE_INFINITY){
+                        particle1.bounce(particle2);
+                    }else{
+                        particle2.bounce(particle1);
+                    }
+
 
                     //Now we need to delete events that contain both particles
                     deleteCollisionEvents(particle1);
@@ -93,21 +98,23 @@ public class MDSimulation {
     private void updateCollisionEvents(double simulationTime) {
         for (Particle p : particleList) {
             // Check if particle collides with wall and add it
-            Optional<WallCollisionEvent> wallCollisionEvent = p.collidesWithWall(wall);
-            if (wallCollisionEvent.isPresent()) {
-                //we add the current simulation time to the time till collision because the position of the particles have been updated
-                CollisionEvent collisionEvent = wallCollisionEvent.get();
-                collisionEvent.setTime(simulationTime + collisionEvent.getTime());
-                if (!collisionEvents.contains(collisionEvent)) {
-                    collisionEvents.add(collisionEvent);
-                }
+            if(p.getMass()!=Double.POSITIVE_INFINITY){
+                Optional<WallCollisionEvent> wallCollisionEvent = p.collidesWithWall(wall);
+                if (wallCollisionEvent.isPresent()) {
+                    //we add the current simulation time to the time till collision because the position of the particles have been updated
+                    CollisionEvent collisionEvent = wallCollisionEvent.get();
+                    collisionEvent.setTime(simulationTime + collisionEvent.getTime());
+                    if (!collisionEvents.contains(collisionEvent)) {
+                        collisionEvents.add(collisionEvent);
+                    }
 
+                }
             }
 
             // Check if particle collides with other particles and add it
             for (Particle q : particleList) {
                 // If the particles are the same, skip
-                if (p.getId() == q.getId() || p.getId()==0) {
+                if (p.getId() == q.getId()) {
                     continue;
                 }
 
@@ -144,7 +151,7 @@ public class MDSimulation {
         if (obstacleMass.isPresent()) { // If it has mass, it is a MovingParticle
             middleObstacle = new MovingParticle(0, 0, 0, obstacleRadius, 0, 0, obstacleMass.get());
         } else { // If it does not have mass, it is a StaticParticle
-            middleObstacle = new MovingParticle(0, 0, 0, obstacleRadius, 0, 0, Double.MAX_VALUE);
+            middleObstacle = new MovingParticle(0, 0, 0, obstacleRadius, 0, 0, Double.POSITIVE_INFINITY);
         }
         generatedParticles.add(middleObstacle);
 
