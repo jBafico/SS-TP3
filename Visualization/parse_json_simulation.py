@@ -26,7 +26,9 @@ def parse_json_simulation(json_file) -> SimulationOutput:
                 ],
                 collision_event=CollisionEvent(
                     collision_type=snapshot['collisionEvent']['collisionType'],
-                    time=snapshot['collisionEvent']['time']
+                    time=snapshot['collisionEvent']['time'],
+                    particle1 = snapshot['collisionEvent'].get("particle1",None),
+                    particle2 = snapshot['collisionEvent'].get("particle2",None)
                 )
             ) for snapshot in json_file['simulations']
         ]

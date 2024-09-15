@@ -71,13 +71,19 @@ def create_simulation_gif_in_memory(data):
     gif_buf.seek(0)  # Rewind the buffer to read the GIF
     return gif_buf
 
-# Example usage:
-json_file = load_most_recent_simulation_json("./files")  # The path to your JSON file
-circle_radius = json_file["global_params"]["wallRadius"]  # Radius of the circular box
 
-# Generate the GIF in memory
-gif_in_memory = create_simulation_gif_in_memory(json_file)
+def main():
+    # Example usage:
+    json_file = load_most_recent_simulation_json("../files")  # The path to your JSON file
+    circle_radius = json_file["global_params"]["wallRadius"]  # Radius of the circular box
 
-# Save or use the GIF as needed, for example, to save to a file:
-with open("./Visualization/simulation_output.gif", "wb") as f:
-    f.write(gif_in_memory.getvalue())
+    # Generate the GIF in memory
+    gif_in_memory = create_simulation_gif_in_memory(json_file)
+
+    # Save or use the GIF as needed, for example, to save to a file:
+    with open("./simulation_output.gif", "wb") as f:
+        f.write(gif_in_memory.getvalue())
+
+
+if __name__ == "__main__":
+    main()
