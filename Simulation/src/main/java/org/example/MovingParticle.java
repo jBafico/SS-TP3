@@ -32,13 +32,7 @@ public class MovingParticle extends Particle {
             // Cuadratic formula
             final double det=Math.sqrt(Math.pow(b,2) - 4*a*c);
             final double t1= (((-1)*b)+det)/(2*a);
-            final double t2= (((-1)*b)-det)/(2*a);
-
-            if(t1>0 && t2<=0){
-                return Optional.of(new WallCollisionEvent(t1, this));
-            }else if(t1<=0 && t2>0){
-                return Optional.of(new WallCollisionEvent(t2, this));
-            }
+            return Optional.of(new WallCollisionEvent(t1, this));
         }
         return Optional.empty();
     }
