@@ -42,27 +42,33 @@ def render_collision_graph(collision_dict: dict[float, dict[int, int]]):
         y_values.append(sum(sub_dict.values()))
 
     # Create scatter plot
-    plt.scatter(x_values, y_values)
+
+    adjusted_array = [x_values[0] / 2]
+    for i in range(1,len(x_values)):
+        adjusted_array.append(( x_values[i-1] + x_values[i] ) / 2)
+
+
+    plt.scatter(adjusted_array, y_values)
+
 
     # Add a line connecting the scatter points
-    plt.plot(x_values, y_values, linestyle='-', color='blue')
+    plt.plot(adjusted_array, y_values, linestyle='-', color='blue')
 
-    plt.xlabel("Intervalo")
+    plt.xlabel("Intervalos Temporales")
     plt.ylabel("Nro Choques")
     
     # Display only the x-values on the x-axis
-    plt.xticks(x_values)
+    plt.xticks(x_values, fontsize=12)  # Adjust the fontsize for the x-axis labels here
     
     # Display only integer values on the y-axis
-    plt.yticks(np.arange(min(y_values), max(y_values) + 1, step=1))  # Set y-axis ticks to integers
+    plt.yticks(np.arange(0, max(y_values) + 1, step=1), fontsize=12)  # Adjust the fontsize for the y-axis labels here
     
     # Use scientific notation for each x-tick
-    formatter = mticker.FuncFormatter(lambda x, _: scientific_to_superscript(f'{x:.2e}'))# GRANDE RANITA!!!
+    formatter = mticker.FuncFormatter(lambda x, _: scientific_to_superscript(f'{x:.2e}'))
     plt.gca().xaxis.set_major_formatter(formatter)
 
     plt.legend()
     plt.show()
-
 
 
 def get_simulation_last_time(simulation_data : SimulationOutput):
