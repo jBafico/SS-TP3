@@ -33,43 +33,41 @@ def scientific_to_superscript(sci_string):
     # Return the formatted string with superscript exponent
     return f"{base}×10{exp_superscript}"
 
-def render_collision_graph(collision_dict: dict[float, dict[int, int]]):
+def render_collision_graph(collision_dict: dict[float, int]):
     x_values = []
     y_values = []
 
-    for x, sub_dict in collision_dict.items():
-        x_values.append(x)
-        y_values.append(sum(sub_dict.values()))
+    total_collisions = 0
+    for time, collisionQty in collision_dict.items():
+        x_values.append(time)
+        total_collisions += collisionQty
+        y_values.append(total_collisions)
 
     # Create scatter plot
-
-    adjusted_array = [x_values[0] / 2]
-    for i in range(1,len(x_values)):
-        adjusted_array.append(( x_values[i-1] + x_values[i] ) / 2)
-
-
-    plt.scatter(adjusted_array, y_values)
-
+    plt.scatter(x_values, y_values)
 
     # Add a line connecting the scatter points
-    plt.plot(adjusted_array, y_values, linestyle='-', color='blue')
+    plt.plot(x_values, y_values, linestyle='-', color='blue')
 
-    plt.xlabel("Intervalos Temporales")
+    plt.xlabel("Tiempo (s)")
     plt.ylabel("Nro Choques")
     
     # Display only the x-values on the x-axis
-    plt.xticks(x_values, fontsize=12)  # Adjust the fontsize for the x-axis labels here
+    plt.xticks(fontsize=12)  # Adjust the fontsize for the x-axis labels here
     
     # Display only integer values on the y-axis
-    plt.yticks(np.arange(0, max(y_values) + 1, step=1), fontsize=12)  # Adjust the fontsize for the y-axis labels here
+    plt.yticks(fontsize=12)  # Adjust the fontsize for the y-axis labels here
     
     # Use scientific notation for each x-tick
-    formatter = mticker.FuncFormatter(lambda x, _: scientific_to_superscript(f'{x:.2e}'))
-    plt.gca().xaxis.set_major_formatter(formatter)
+    plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
+    plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+    
+    # Set the y-axis limit to allow space above the maximum value
+    max_y_value = max(y_values)
+    plt.ylim(0, max_y_value * 1.1)  # Add 10% padding above the max value
 
     plt.legend()
     plt.show()
-
 
 def get_simulation_last_time(simulation_data : SimulationOutput):
     return simulation_data.simulations[-1].collision_event.time
@@ -79,20 +77,15 @@ def get_simulation_last_time(simulation_data : SimulationOutput):
     
 
 def create_collision_graph(simulation_data: SimulationOutput,config):
-    lastTime = get_simulation_last_time(simulation_data)
-    slot = lastTime / config["timeSlotDivision"]
 
     simulations = simulation_data.simulations
-    current_time = slot
 
-    #Diccionario mapea tiempo de colision => id particula => cantidad de veces que colisiono
-    collisionDic : dict[float, dict[int,int]] = {} 
-    collisionDic.setdefault(current_time, {})
+    #Diccionario mapea tiempo de colision => cantidad de colisiones
+    collisionDic : dict[float, int] = {} 
+
+    already_collisioned = set()
     for simulation in simulations:
-        if simulation.collision_event.time > current_time:
-            current_time += slot
-            collisionDic.setdefault(current_time, {})
-
+        
         if simulation.collision_event.collision_type == "wall": # Si es pared no me interesa
             continue
         if simulation.collision_event.particle1['id'] != 0 and simulation.collision_event.particle2['id'] != 0: # Si no esta involucrado el objeto quieto no me interesa
@@ -103,9 +96,13 @@ def create_collision_graph(simulation_data: SimulationOutput,config):
             otherParticle = simulation.collision_event.particle2
 
         if config["countColisionOnlyOnce"]:
-            collisionDic[current_time][otherParticle['id']] = 1
-        else: # Initialize with 1 if the key doesn't exist, otherwise add 1 to the current value
-            collisionDic[current_time][otherParticle['id']] = collisionDic[current_time].get(otherParticle['id'], 0) + 1
+            if otherParticle['id'] in already_collisioned:
+                continue
+            already_collisioned.add(otherParticle['id'])
+
+         
+
+        collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time,0) + 1
 
 
     render_collision_graph(collisionDic)
