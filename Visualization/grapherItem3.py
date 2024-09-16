@@ -6,6 +6,32 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+import matplotlib.ticker as mticker
+
+def scientific_to_superscript(sci_string):
+    # Map for superscript digits and the minus sign
+    superscript_map = {
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹',
+        '-': '⁻'
+    }
+    
+    # Split the string into base and exponent parts (assuming 'e' format)
+    base, exp = sci_string.split('e')
+
+    # Convert exponent into superscript characters
+    exp_superscript = ''.join(superscript_map.get(char, char) for char in exp)
+    
+    # Return the formatted string with superscript exponent
+    return f"{base}×10{exp_superscript}"
 
 def render_collision_graph(collision_dict: dict[float, dict[int, int]]):
     x_values = []
@@ -30,8 +56,13 @@ def render_collision_graph(collision_dict: dict[float, dict[int, int]]):
     # Display only integer values on the y-axis
     plt.yticks(np.arange(min(y_values), max(y_values) + 1, step=1))  # Set y-axis ticks to integers
     
+    # Use scientific notation for each x-tick
+    formatter = mticker.FuncFormatter(lambda x, _: scientific_to_superscript(f'{x:.2e}'))# GRANDE RANITA!!!
+    plt.gca().xaxis.set_major_formatter(formatter)
+
     plt.legend()
     plt.show()
+
 
 
 def get_simulation_last_time(simulation_data : SimulationOutput):
