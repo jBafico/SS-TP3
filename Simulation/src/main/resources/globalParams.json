@@ -3,10 +3,11 @@
   "wallRadius": 0.05,
   "particleRadius": 0.001,
   "obstacleRadius": 0.005,
+  "obstacleMass": 0.5,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 5000,
+  "maxEvents": 300,
   "runMultipleTimes": true,
-  "velocityModulusArray": [1,2,3],
-  "rerunQty": 1
+  "velocityModulusArray": [1],
+  "rerunQty": 2
 }
