@@ -1,12 +1,12 @@
 {
-  "numberOfParticles": 60,
+  "numberOfParticles": 50,
   "wallRadius": 0.05,
   "particleRadius": 0.001,
   "obstacleRadius": 0.005,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 1000,
+  "maxEvents": 5000,
   "runMultipleTimes": true,
   "velocityModulusArray": [1,2,3],
-  "rerunQty": 5
+  "rerunQty": 10
 }
