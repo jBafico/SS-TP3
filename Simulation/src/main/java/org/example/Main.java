@@ -38,13 +38,35 @@ public class Main {
         // Generate output json file name that has current timestamp
         String filenameWithTimestamp = "simulation_" + timeStamp + ".json";
 
+        if (!params.isRunMultipleTimes()){
+            try (FileWriter writer = initializeOutputJson(filenameWithTimestamp, params)) {
+                MDSimulation simulation = new MDSimulation(params.getNumberOfParticles(), params.getWallRadius(), params.getParticleRadius(), params.getObstacleRadius(), params.getVelocityModulus(), params.getParticleMass(), Optional.ofNullable(params.getObstacleMass()), params.getMaxEvents());
+                simulation.start(writer);
+                writer.write("\n]\n}");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
         try (FileWriter writer = initializeOutputJson(filenameWithTimestamp, params)) {
-            MDSimulation simulation = new MDSimulation(params.getNumberOfParticles(), params.getWallRadius(), params.getParticleRadius(), params.getObstacleRadius(), params.getVelocityModulus(), params.getParticleMass(), Optional.ofNullable(params.getObstacleMass()), params.getMaxEvents());
-            simulation.start(writer);
+            for (int i = 1; i <= params.getRerunQty(); i++){
+                writer.write("{ \"simulation_%d\" : [ ".formatted(i));
+                MDSimulation simulation = new MDSimulation(params.getNumberOfParticles(), params.getWallRadius(), params.getParticleRadius(), params.getObstacleRadius(), params.getVelocityModulus(), params.getParticleMass(), Optional.ofNullable(params.getObstacleMass()), params.getMaxEvents());
+                simulation.start(writer);
+                if (i != params.getRerunQty()){
+                    writer.write("]},");
+                } else {
+                    writer.write("]}");
+                }
+            }
             writer.write("\n]\n}");
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
 
 
     }

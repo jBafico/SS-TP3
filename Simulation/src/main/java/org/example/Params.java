@@ -18,4 +18,6 @@ public class Params {
     private double particleMass;
     private Double obstacleMass;
     private int maxEvents;
+    private boolean runMultipleTimes;
+    private int rerunQty;
 }

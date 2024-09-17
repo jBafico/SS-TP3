@@ -1,3 +1,4 @@
 {
-    "countColisionOnlyOnce": false
+    "countColisionOnlyOnce": false,
+    "withReRunFormat": true
 }
