@@ -1,3 +1,5 @@
 {
-    "dcmTimeSlice": 10
+    "dmcTimeStart": 0,
+    "dmcTimeEnd": 0.16,
+    "dcmStep": 0.0001
 }

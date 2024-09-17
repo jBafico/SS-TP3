@@ -6,8 +6,8 @@
   "obstacleMass": 3,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 3000,
+  "maxEvents": 300,
   "runMultipleTimes": true,
   "velocityModulusArray": [1],
-  "rerunQty": 2
+  "rerunQty": 6
 }
