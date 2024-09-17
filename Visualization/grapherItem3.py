@@ -195,17 +195,16 @@ def create_observables_graphics(simulation_data : list[SimulationOutput], config
 
 def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]],config):
     # Extract keys (velocities) and corresponding values (list of slopes)
-    velocities = np.array(list(velocities_to_slopes.keys()))
+    velocities = np.array([x**2 for x in velocities_to_slopes.keys()])
     means = np.array([np.mean(slopes) for slopes in velocities_to_slopes.values()])
     std_devs = np.array([np.std(slopes) for slopes in velocities_to_slopes.values()])
     
     # Create a scatter plot with error bars
-    plt.errorbar(velocities, means, yerr=std_devs, fmt='o', capsize=5, label='Mean with error bars')
+    plt.errorbar(velocities, means, yerr=std_devs, fmt='o', capsize=5)
 
     # Add labels and title
-    plt.xlabel('Velocity')
-    plt.ylabel('Slope')
-    plt.title('Mean Slopes with Error Bars for Each Velocity')
+    plt.xlabel('Velocidad (m\u00b2/s\u00b2)')
+    plt.ylabel('Pendiente de recta')
 
     # Show legend
     plt.legend()
