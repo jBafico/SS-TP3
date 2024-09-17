@@ -47,30 +47,84 @@ public class MovingParticle extends Particle {
 
     @Override
     public void bounce(Particle p) {
-        final double deltaX=p.getX()- getX();
-        final double deltaY=p.getY()- getY();
-        final double deltaVx=p.getVx()- getVx();
-        final double deltaVy=p.getVy()- getVy();
-        final double sigma= p.getR()+ getR();
+        double deltaX;
+        double deltaY;
+        double deltaVx;
+        double deltaVy;
+        double sigma;
 
-        //Papers formulas on Page 3
+        // Impulse calculation
         double j;
-        if(p.getMass()!=Double.POSITIVE_INFINITY){
+        if (p.getMass() != Double.POSITIVE_INFINITY) {
+            deltaX = p.getX() - getX();
+            deltaY = p.getY() - getY();
+            deltaVx = p.getVx() - getVx();
+            deltaVy = p.getVy() - getVy();
+            sigma = p.getR() + getR();
             j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
+        } else {
+            deltaX = 0 - getX(); // p is fixed, so use the position of this particle
+            deltaY = 0 - getY();
+            deltaVx = 0 - getVx(); // No velocity for the fixed particle
+            deltaVy = 0 - getVy();
+            sigma = p.getR() + getR();
+            j = (2 * getMass() * (deltaVx * deltaX + deltaVy * deltaY)) / sigma;
         }
-        else {
-            j= (2 * getMass() * (deltaVx* deltaX + deltaVy * deltaY))/(sigma * ((getMass()/p.getMass()) + 1));
-        }
+
         final double jx = j * deltaX / sigma;
         final double jy = j * deltaY / sigma;
 
+        // Update this particle's velocity
         this.setVx(getVx() + jx / getMass());
         this.setVy(getVy() + jy / getMass());
-        if(p.getMass()!=Double.POSITIVE_INFINITY){
-            p.setVx(p.getX() - jx / p.getMass());
-            p.setVy(p.getY() - jy / p.getMass());
+
+        // If the other particle is not fixed, update its velocity as well
+        if (p.getMass() != Double.POSITIVE_INFINITY) {
+            p.setVx(p.getVx() - jx / p.getMass());
+            p.setVy(p.getVy() - jy / p.getMass());
         }
     }
+
+//    @Override
+//    public void bounce(Particle p) {
+//
+//        double deltaX;
+//        double deltaY;
+//        double deltaVx;
+//        double deltaVy;
+//        double sigma;
+//
+//        //Papers formulas on Page 3
+//        double j;
+//        if(p.getMass()!=Double.POSITIVE_INFINITY){
+//            deltaX=p.getX()- getX();
+//            deltaY=p.getY()- getY();
+//            deltaVx=p.getVx()- getVx();
+//            deltaVy=p.getVy()- getVy();
+//            sigma= p.getR()+ getR();
+//            j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
+//        }
+//        else {
+//            if (p.getVx() != 0 || p.getVy() != 0){
+//
+//            }
+//            deltaX=0 - getX();
+//            deltaY=0 - getY();
+//            deltaVx=0- getVx();
+//            deltaVy=0 - getVy();
+//            sigma= p.getR()+ getR();
+//            j= (2 * getMass() * (deltaVx* deltaX + deltaVy * deltaY))/(sigma * ((getMass()/p.getMass()) + 1));
+//        }
+//        final double jx = j * deltaX / sigma;
+//        final double jy = j * deltaY / sigma;
+//
+//        this.setVx(getVx() + jx / getMass());
+//        this.setVy(getVy() + jy / getMass());
+//        if(p.getMass()!=Double.POSITIVE_INFINITY){
+//            p.setVx(p.getX() - jx / p.getMass());
+//            p.setVy(p.getY() - jy / p.getMass());
+//        }
+//    }
 
     @Override
     public void bounceWithWall(Wall wall) { // The particle is already at the collision point

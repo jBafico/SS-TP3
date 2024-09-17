@@ -30,7 +30,6 @@ public class MDSimulation {
             events++;
             // Update collision events
             updateCollisionEvents(simulationTime);
-
             //We get the first collision event
             if (!collisionEvents.isEmpty()) {
                 CollisionEvent collisionEvent = collisionEvents.poll();
@@ -175,6 +174,7 @@ public class MDSimulation {
                 generatedParticles.add(newParticle);
             }
         }
+        System.out.println("Finished generation");
         return generatedParticles;
     }
 
