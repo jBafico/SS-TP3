@@ -14,7 +14,7 @@ def main():
     print("Finished parsing JSON data.")
 
     print("Plotting data...")
-    [plot_pressure_over_time(s) for s in simulation_outputs]
+    [[plot_pressure_over_time(simulation_snapshot, simulation_output.global_params.wall_radius, simulation_output.global_params.particle_mass) for simulation_snapshot in simulation_output.simulations.values()] for simulation_output in simulation_outputs]
 
 
     print("Finished plotting data.")

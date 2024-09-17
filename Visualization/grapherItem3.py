@@ -133,21 +133,20 @@ def create_collision_graph_data(simulations: list[SimulationSnapshot] ,config, )
         
         if simulation.collision_event.collision_type == "wall": # Si es pared no me interesa
             continue
-        if simulation.collision_event.particle1['id'] != 0 and simulation.collision_event.particle2['id'] != 0: # Si no esta involucrado el objeto quieto no me interesa
+        if simulation.collision_event.particle1.id != 0 and simulation.collision_event.particle2.id != 0: # Si no esta involucrado el objeto quieto no me interesa
             continue
 
         otherParticle = simulation.collision_event.particle1
-        if simulation.collision_event.particle1['id'] == 0: #Era la otra
+        if simulation.collision_event.particle1.id == 0: # Era la otra
             otherParticle = simulation.collision_event.particle2
 
         if config["countColisionOnlyOnce"]:
-            if otherParticle['id'] in already_collisioned:
+            if otherParticle.id in already_collisioned:
                 collisionDic[simulation.collision_event.time] = 0
                 continue
-            already_collisioned.add(otherParticle['id'])
+            already_collisioned.add(otherParticle.id)
 
-        collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time,0) + 1
-
+        collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time, 0) + 1
 
     return collisionDic
 

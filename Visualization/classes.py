@@ -40,4 +40,4 @@ class SimulationSnapshot:
 @dataclass
 class SimulationOutput:
     global_params: GlobalParams
-    simulations: Dict[str,List[SimulationSnapshot]]
+    simulations: Dict[str, List[SimulationSnapshot]]

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import matplotlib.pyplot as plt
 from math import pi
 
-from Visualization.classes import SimulationOutput, Particle
+from Visualization.classes import Particle, SimulationSnapshot
 
 
 @dataclass
@@ -18,9 +18,9 @@ class PressureDataInInterval:
         return f"PressureDataInInterval(interval_start={self.interval_start}, interval_end={self.interval_end}, pressure={self.pressure}, momentum_sum={self.momentum_sum}, total_wall_collisions={self.total_wall_collisions})"
 
 
-def plot_pressure_over_time(simulation_output: SimulationOutput) -> None:
+def plot_pressure_over_time(simulation_snapshots: List[SimulationSnapshot], circle_radius: float, particle_mass: float) -> None:
     # Calculate the pressure data by time intervals
-    pressure_data_by_interval: Dict[float, PressureDataInInterval] = calculate_pressure(simulation_output)
+    pressure_data_by_interval: Dict[float, PressureDataInInterval] = calculate_pressure(simulation_snapshots, circle_radius, particle_mass)
 
     # Extract time intervals and corresponding pressures
     time_intervals = []
@@ -47,22 +47,19 @@ def plot_pressure_over_time(simulation_output: SimulationOutput) -> None:
     plt.show()
 
 
-def calculate_pressure(simulation_output: SimulationOutput) -> Dict[float, PressureDataInInterval]:
-    circle_radius = simulation_output.global_params.wall_radius
-
-    final_time = simulation_output.simulations[-1].collision_event.time
+def calculate_pressure(simulation_snapshots: List[SimulationSnapshot], circle_radius: float, particle_mass: float) -> Dict[float, PressureDataInInterval]:
+    final_time = simulation_snapshots[-1].collision_event.time
     time_interval = final_time / 15
 
     # The key of the dict is the end of the time interval
     pressure_data_by_interval: Dict[float, PressureDataInInterval] = {}
-    for simulation in simulation_output.simulations:
+    for simulation in simulation_snapshots:
         # We are only interested in wall collisions
         if simulation.collision_event.collision_type != "wall":
             continue
 
         # Calculate the normal velocity to the wall and get the particle mass
         vn = calculate_normal_velocity_to_wall(simulation.collision_event.particle1)
-        particle_mass = simulation_output.global_params.particle_mass
 
         # Generate the corresponding dict key
         time_interval_end = simulation.collision_event.time // time_interval * time_interval + time_interval
