@@ -1,11 +1,12 @@
 {
-  "numberOfParticles": 60,
+  "numberOfParticles": 200,
   "wallRadius": 0.05,
   "particleRadius": 0.001,
   "obstacleRadius": 0.005,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 3,
-  "runMultipleTimes": true,
-  "rerunQty": 10
+  "maxEvents": 11000,
+  "onlySaveWallEvents": false,
+  "runMultipleTimes": false,
+  "rerunQty": 1
 }
