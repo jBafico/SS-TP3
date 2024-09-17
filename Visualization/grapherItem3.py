@@ -87,7 +87,7 @@ def get_simulation_last_time(simulation_data : SimulationOutput):
 
 def create_collision_graph(simulation_data: SimulationOutput,config):
 
-    simulations = simulation_data.simulations
+    simulations = simulation_data.simulations["simulation_1"]
 
     #Diccionario mapea tiempo de colision => cantidad de colisiones
     collisionDic : dict[float, int] = {} 

@@ -2,6 +2,11 @@ from classes import *
 
 
 def parse_json_simulation(json_file) -> SimulationOutput:
+
+
+
+
+
     return SimulationOutput(
         global_params=GlobalParams(
             number_of_particles=json_file['global_params']['numberOfParticles'],
@@ -12,7 +17,7 @@ def parse_json_simulation(json_file) -> SimulationOutput:
             particle_mass=json_file['global_params']['particleMass'],
             max_events=json_file['global_params']['maxEvents']
         ),
-        simulations=[
+        simulations={ f"simulation_{i + 1}" : [
             SimulationSnapshot(
                 particles=[
                     Particle(
@@ -30,6 +35,6 @@ def parse_json_simulation(json_file) -> SimulationOutput:
                     particle1 = snapshot['collisionEvent'].get("particle1",None),
                     particle2 = snapshot['collisionEvent'].get("particle2",None)
                 )
-            ) for snapshot in json_file['simulations']
-        ]
+            ) for snapshot in json_file['simulations'][i][f'simulation_{i + 1}']
+        ] for i in range(len(json_file["simulations"]))}
     )
