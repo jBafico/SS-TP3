@@ -48,18 +48,34 @@ public class Main {
             }
             return;
         }
-        try (FileWriter writer = initializeOutputJson(filenameWithTimestamp, params)) {
-            for (int i = 1; i <= params.getRerunQty(); i++){
-                writer.write("{ \"simulation_%d\" : [ ".formatted(i));
-                MDSimulation simulation = new MDSimulation(params.getNumberOfParticles(), params.getWallRadius(), params.getParticleRadius(), params.getObstacleRadius(), params.getVelocityModulus(), params.getParticleMass(), Optional.ofNullable(params.getObstacleMass()), params.getMaxEvents());
-                simulation.start(writer);
-                if (i != params.getRerunQty()){
-                    writer.write("]},");
-                } else {
-                    writer.write("]}");
+        try (FileWriter writer = initializeOutputJsonForMultipleVelocity(filenameWithTimestamp, params)) {
+            writer.write("[");
+            var velocityArray = params.getVelocityModulusArray();
+
+            for (int it = 0 ; it < velocityArray.length; it++){
+                double velocity = velocityArray[it];
+                writer.write("{\n\"global_params\": ");
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                params.setVelocityModulus(velocity);
+                gson.toJson(params, writer);
+                writer.write(",\n");
+                writer.write("\"simulations\": [\n");
+                for (int i = 1; i <= params.getRerunQty(); i++){
+                    writer.write("{ \"simulation_%d\" : [ ".formatted(i));
+                    MDSimulation simulation = new MDSimulation(params.getNumberOfParticles(), params.getWallRadius(), params.getParticleRadius(), params.getObstacleRadius(), params.getVelocityModulus(), params.getParticleMass(), Optional.ofNullable(params.getObstacleMass()), params.getMaxEvents());
+                    simulation.start(writer);
+                    if (i != params.getRerunQty()){
+                        writer.write("]},");
+                    } else {
+                        writer.write("]}");
+                    }
+                }
+                writer.write("\n]\n}");
+                if (it != velocityArray.length - 1){
+                    writer.write(",");
                 }
             }
-            writer.write("\n]\n}");
+            writer.write("]");
 
 
         } catch (IOException e) {
@@ -69,6 +85,10 @@ public class Main {
 
 
 
+    }
+
+    private static FileWriter initializeOutputJsonForMultipleVelocity(String outputJsonName,Params params) throws IOException {
+        return new FileWriter("./files/%s".formatted(outputJsonName));
     }
 
     //TODO add params

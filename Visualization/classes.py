@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict
 
 
 @dataclass
@@ -40,4 +40,4 @@ class SimulationSnapshot:
 @dataclass
 class SimulationOutput:
     global_params: GlobalParams
-    simulations: List[SimulationSnapshot]
+    simulations: Dict[str,List[SimulationSnapshot]]

@@ -4,8 +4,6 @@ package org.example;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Optional;
-
 @Getter
 @Setter
 public class Params {
@@ -20,4 +18,5 @@ public class Params {
     private int maxEvents;
     private boolean runMultipleTimes;
     private int rerunQty;
+    private Double[] velocityModulusArray;
 }

@@ -1,4 +1,7 @@
 {
-    "countColisionOnlyOnce": false,
-    "withReRunFormat": true
+    "renderOneGraph": true,
+    "countColisionOnlyOnce": true,
+    "stationaryThresholdPeriods": 20, 
+    "stationaryThresholdTolerance": 0,
+    "graphicObservables": true
 }

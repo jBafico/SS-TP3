@@ -5,8 +5,8 @@
   "obstacleRadius": 0.005,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 11000,
-  "onlySaveWallEvents": false,
-  "runMultipleTimes": false,
-  "rerunQty": 1
+  "maxEvents": 5000,
+  "runMultipleTimes": true,
+  "velocityModulusArray": [1,2,3],
+  "rerunQty": 10
 }
