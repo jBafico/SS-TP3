@@ -5,7 +5,8 @@
   "obstacleRadius": 0.005,
   "velocityModulus": 1,
   "particleMass": 1,
-  "maxEvents": 4000,
+  "maxEvents": 1000,
   "runMultipleTimes": true,
-  "rerunQty": 10
+  "velocityModulusArray": [1,2,3],
+  "rerunQty": 5
 }

@@ -1,4 +1,6 @@
 {
-    "countColisionOnlyOnce": true,
+    "renderOneGraph": true,
+    "countColisionOnlyOnce": false,
+    "observablesForNotOnlyOnce": true,
     "withReRunFormat": true
 }

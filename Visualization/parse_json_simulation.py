@@ -1,21 +1,18 @@
 from classes import *
 
 
-def parse_json_simulation(json_file) -> SimulationOutput:
+def parse_json_simulation(json_file) -> List[SimulationOutput]:
 
 
-
-
-
-    return SimulationOutput(
+    return [ SimulationOutput(
         global_params=GlobalParams(
-            number_of_particles=json_file['global_params']['numberOfParticles'],
-            wall_radius=json_file['global_params']['wallRadius'],
-            particle_radius=json_file['global_params']['particleRadius'],
-            obstacle_radius=json_file['global_params']['obstacleRadius'],
-            velocity_modulus=json_file['global_params']['velocityModulus'],
-            particle_mass=json_file['global_params']['particleMass'],
-            max_events=json_file['global_params']['maxEvents']
+            number_of_particles=current_simulation['global_params']['numberOfParticles'],
+            wall_radius=current_simulation['global_params']['wallRadius'],
+            particle_radius=current_simulation['global_params']['particleRadius'],
+            obstacle_radius=current_simulation['global_params']['obstacleRadius'],
+            velocity_modulus=current_simulation['global_params']['velocityModulus'],
+            particle_mass=current_simulation['global_params']['particleMass'],
+            max_events=current_simulation['global_params']['maxEvents']
         ),
         simulations={ f"simulation_{i + 1}" : [
             SimulationSnapshot(
@@ -35,6 +32,6 @@ def parse_json_simulation(json_file) -> SimulationOutput:
                     particle1 = snapshot['collisionEvent'].get("particle1",None),
                     particle2 = snapshot['collisionEvent'].get("particle2",None)
                 )
-            ) for snapshot in json_file['simulations'][i][f'simulation_{i + 1}']
-        ] for i in range(len(json_file["simulations"]))}
-    )
+            ) for snapshot in current_simulation['simulations'][i][f'simulation_{i + 1}']
+        ] for i in range(len(current_simulation["simulations"]))}
+    ) for current_simulation in json_file]

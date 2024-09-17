@@ -1,7 +1,7 @@
 import os
 from parse_json_simulation import parse_json_simulation
 from load_most_recent_json import load_most_recent_simulation_json
-from classes import SimulationOutput
+from classes import SimulationOutput, SimulationSnapshot
 import json
 import matplotlib.pyplot as plt
 
@@ -85,9 +85,7 @@ def get_simulation_last_time(simulation_data : SimulationOutput):
 
     
 
-def create_collision_graph(simulation_data: SimulationOutput,config):
-
-    simulations = simulation_data.simulations["simulation_1"]
+def create_collision_graph_data(simulations: list[SimulationSnapshot] ,config, ):
 
     #Diccionario mapea tiempo de colision => cantidad de colisiones
     collisionDic : dict[float, int] = {} 
@@ -113,10 +111,16 @@ def create_collision_graph(simulation_data: SimulationOutput,config):
         collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time,0) + 1
 
 
-    render_collision_graph(collisionDic,config["countColisionOnlyOnce"])
+    return collisionDic
 
 
+def create_observables_for_only_once(simulation_data : SimulationOutput):
+    simulationDict = simulation_data.simulations
 
+
+    for simulationNumber, simulationListSnapshot in simulationDict.items():
+        pass
+    
 
 
 
@@ -130,7 +134,16 @@ if __name__ == "__main__":
         config = json.load(f)
     json_data = load_most_recent_simulation_json("../files")
     simulation_data = parse_json_simulation(json_data)
-    create_collision_graph(simulation_data,config)
+    if config["renderOneGraph"]:
+        simulations = simulation_data[0].simulations["simulation_1"]
+        data = create_collision_graph_data(simulations,config)
+        render_collision_graph(data,config["countColisionOnlyOnce"])
+
+    if config["observablesForNotOnlyOnce"]:
+        create_observables_for_only_once(simulation_data)
+
+
+    print("FINISHED")
 
 
 
