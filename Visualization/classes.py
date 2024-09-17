@@ -16,7 +16,7 @@ class Particle:
 class CollisionEvent:
     collision_type: str
     time: float
-    particle1 : Particle 
+    particle1: Particle
     particle2: Particle
 
 
