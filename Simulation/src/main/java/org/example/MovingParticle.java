@@ -85,47 +85,6 @@ public class MovingParticle extends Particle {
         }
     }
 
-//    @Override
-//    public void bounce(Particle p) {
-//
-//        double deltaX;
-//        double deltaY;
-//        double deltaVx;
-//        double deltaVy;
-//        double sigma;
-//
-//        //Papers formulas on Page 3
-//        double j;
-//        if(p.getMass()!=Double.POSITIVE_INFINITY){
-//            deltaX=p.getX()- getX();
-//            deltaY=p.getY()- getY();
-//            deltaVx=p.getVx()- getVx();
-//            deltaVy=p.getVy()- getVy();
-//            sigma= p.getR()+ getR();
-//            j = 2 * getMass() * p.getMass() * (deltaVx * deltaX + deltaVy * deltaY) / (sigma * (getMass() + p.getMass()));
-//        }
-//        else {
-//            if (p.getVx() != 0 || p.getVy() != 0){
-//
-//            }
-//            deltaX=0 - getX();
-//            deltaY=0 - getY();
-//            deltaVx=0- getVx();
-//            deltaVy=0 - getVy();
-//            sigma= p.getR()+ getR();
-//            j= (2 * getMass() * (deltaVx* deltaX + deltaVy * deltaY))/(sigma * ((getMass()/p.getMass()) + 1));
-//        }
-//        final double jx = j * deltaX / sigma;
-//        final double jy = j * deltaY / sigma;
-//
-//        this.setVx(getVx() + jx / getMass());
-//        this.setVy(getVy() + jy / getMass());
-//        if(p.getMass()!=Double.POSITIVE_INFINITY){
-//            p.setVx(p.getX() - jx / p.getMass());
-//            p.setVy(p.getY() - jy / p.getMass());
-//        }
-//    }
-
     @Override
     public void bounceWithWall(Wall wall) { // The particle is already at the collision point
         //First we calculate the distance from the center (0,0)
