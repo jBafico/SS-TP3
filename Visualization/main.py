@@ -9,12 +9,12 @@ def main():
 
     # Load the most recent simulation JSON data
     json_data = load_most_recent_simulation_json('../files')
-    simulation_output = parse_json_simulation(json_data)
+    simulation_outputs = parse_json_simulation(json_data)
 
     print("Finished parsing JSON data.")
 
     print("Plotting data...")
-    plot_pressure_over_time(simulation_output)
+    [plot_pressure_over_time(s) for s in simulation_outputs]
 
 
     print("Finished plotting data.")
