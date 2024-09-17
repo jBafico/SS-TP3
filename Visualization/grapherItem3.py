@@ -97,10 +97,9 @@ def create_collision_graph(simulation_data: SimulationOutput,config):
 
         if config["countColisionOnlyOnce"]:
             if otherParticle['id'] in already_collisioned:
+                collisionDic[simulation.collision_event.time] = 0
                 continue
             already_collisioned.add(otherParticle['id'])
-
-         
 
         collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time,0) + 1
 
