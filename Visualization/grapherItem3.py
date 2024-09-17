@@ -1,3 +1,4 @@
+import os
 from parse_json_simulation import parse_json_simulation
 from load_most_recent_json import load_most_recent_simulation_json
 from classes import SimulationOutput
@@ -33,7 +34,12 @@ def scientific_to_superscript(sci_string):
     # Return the formatted string with superscript exponent
     return f"{base}×10{exp_superscript}"
 
-def render_collision_graph(collision_dict: dict[float, int]):
+
+def render_collision_graph(collision_dict: dict[float, int],countOnlyOnce: bool):
+    # Create the directory if it doesn't exist
+    output_dir = "item3Output"
+    os.makedirs(output_dir, exist_ok=True)
+    
     x_values = []
     y_values = []
 
@@ -53,10 +59,10 @@ def render_collision_graph(collision_dict: dict[float, int]):
     plt.ylabel("Nro Choques")
     
     # Display only the x-values on the x-axis
-    plt.xticks(fontsize=12)  # Adjust the fontsize for the x-axis labels here
+    plt.xticks(fontsize=12)
     
     # Display only integer values on the y-axis
-    plt.yticks(fontsize=12)  # Adjust the fontsize for the y-axis labels here
+    plt.yticks(fontsize=12)
     
     # Use scientific notation for each x-tick
     plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
@@ -64,10 +70,13 @@ def render_collision_graph(collision_dict: dict[float, int]):
     
     # Set the y-axis limit to allow space above the maximum value
     max_y_value = max(y_values)
-    plt.ylim(0, max_y_value * 1.1)  # Add 10% padding above the max value
+    plt.ylim(0, max_y_value * 1.1)
 
-    plt.legend()
-    plt.show()
+    # Save the plot to a file in the output directory
+    output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}.png")
+    plt.savefig(output_file)
+
+    print(f"Graph saved to {output_file}")
 
 def get_simulation_last_time(simulation_data : SimulationOutput):
     return simulation_data.simulations[-1].collision_event.time
@@ -104,7 +113,7 @@ def create_collision_graph(simulation_data: SimulationOutput,config):
         collisionDic[simulation.collision_event.time] = collisionDic.get(simulation.collision_event.time,0) + 1
 
 
-    render_collision_graph(collisionDic)
+    render_collision_graph(collisionDic,config["countColisionOnlyOnce"])
 
 
 
