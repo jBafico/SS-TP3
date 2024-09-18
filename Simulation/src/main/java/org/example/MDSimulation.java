@@ -26,6 +26,7 @@ public class MDSimulation {
     public void start(FileWriter writer) {
         int events = 0;
         double simulationTime = 0;
+        boolean firstEvent = true;
         while (events < maxEvents) {
             events++;
             // Update collision events
@@ -43,8 +44,16 @@ public class MDSimulation {
                 //Persisto estado en sistema
                 try {
                     //Persisto estado del sistema
-                    var data = mapper.writeValueAsString(new SimulationSnapshot(particleList, collisionEvent));
-                    writer.write(data);
+                    var event = new SimulationSnapshot(particleList, collisionEvent);
+                    var data = mapper.writeValueAsString(event);
+                    if (event.collisionEvent instanceof WallCollisionEvent){
+                        if (firstEvent) {
+                            writer.write(data);
+                            firstEvent = false;
+                        } else {
+                            writer.write("," + data);
+                        }
+                    }
                 } catch (Exception e){
                     e.printStackTrace();
                     System.exit(1);
@@ -80,14 +89,8 @@ public class MDSimulation {
                 //lastly we update the simulation time
                 simulationTime = eventTime;
             }
-            if (events != maxEvents) {
-                try {
-                    writer.write(",");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-            }
+
+
         }
 
 

@@ -9,5 +9,5 @@
   "maxEvents": 300,
   "runMultipleTimes": true,
   "velocityModulusArray": [1],
-  "rerunQty": 6
+  "rerunQty": 1
 }
