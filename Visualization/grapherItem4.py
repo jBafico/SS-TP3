@@ -17,7 +17,7 @@ def calculate_distance_to_center(prev_snapshot: SimulationSnapshot):
             big_particle = particle
             break
     
-    distance = math.sqrt(big_particle.x ** 2 + big_particle.y ** 2)
+    distance = math.sqrt(big_particle.x ** 2 + big_particle.y ** 2) ** 2
     
     return distance
 
@@ -48,28 +48,81 @@ def obtain_mcd_graphic(simulation_data : SimulationOutput, config):
         if len(value) == len(simulation_data.simulations):
             toGraph_dict[float(key)] = value
 
-
-
     plot_scatter_with_error_bars(toGraph_dict)
-            
 
 
 
-def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]]):
+def calculate_cuadratic_error(xs,ys):
+    Y_INTERCEPT = 0
+    LINEAR_FUNCTION = lambda x, m: m * x + Y_INTERCEPT
+    TRIES = 40
+
+
+    max_slope = max(ys) / max(xs)
+    slopes = np.arange(0, max_slope, max_slope / TRIES)
+
+    xs_out = []
+    ys_out = []
+    for slope in slopes:
+        d = slope / 4
+        error = 0
+        for x, y in zip(xs, ys):
+            error += (y - LINEAR_FUNCTION(x, slope))**2
+        xs_out.append(d)
+        ys_out.append(error)
+        
+
+    return xs_out, ys_out
+    
+
+
+def reduce_to_slope(xs, ys):
+    Y_INTERCEPT = 0
+    LINEAR_FUNCTION = lambda x, m: m * x + Y_INTERCEPT
+    TRIES = 40
+
+    candidate_slope = 0
+    min_error = np.inf
+
+    max_slope = max(ys) / max(xs)
+    slopes = np.arange(0, max_slope, max_slope / TRIES)
+
+    for slope in slopes:
+        error = 0
+        for x, y in zip(xs, ys):
+            error += (y - LINEAR_FUNCTION(x, slope))**2
+        if error < min_error:
+            min_error = error
+            candidate_slope = slope
+
+    return candidate_slope, min_error
+
+
+
+def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
     # Extract keys (velocities) and corresponding values (list of slopes)
-    velocities = np.array([x**2 for x in velocities_to_slopes.keys()])
-    means = np.array([np.mean(slopes) for slopes in velocities_to_slopes.values()])
-    std_devs = np.array([np.std(slopes) for slopes in velocities_to_slopes.values()])
+    time = np.array(list(time_to_dmc.keys()))
+    means = np.array([np.mean(slopes) for slopes in time_to_dmc.values()])
+    std_devs = np.array([np.std(slopes) for slopes in time_to_dmc.values()])
+
+
     
     # Create a scatter plot with error bars
-    plt.errorbar(velocities, means, yerr=std_devs, fmt='o', capsize=5)
+    plt.errorbar(time, means, yerr=std_devs, fmt='o', capsize=5)
+
+
+    slope, minError = reduce_to_slope(time,means)
+
+
+
 
     # Add labels and title
-    plt.xlabel('Tiempo (s)')
+    plt.xlabel('Tiempo (s\u00b2)')
     plt.ylabel('DCM (m)')
 
-    # Show legend
+    # Show legend   
     plt.legend()
+
 
 
     
@@ -81,7 +134,37 @@ def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]])
     plt.savefig(output_file)
 
     print(f"Graph observables saved to {output_file}")
+
+
+    # Plot the linear function (y = slope * time) in red
+    linear_fit = slope * time  # Linear function with calculated slope
+    plt.plot(time, linear_fit, 'r-', label=f'Linear fit (slope={slope:.2f})')
+
+     # Save the plot to a file in the output directory
+    output_name = "observables_with_slope_mcd.png"
+    output_file = os.path.join(output_dir,output_name)
+    os.makedirs(output_dir, exist_ok=True)
+
+    plt.savefig(output_file)
+
+    plt.clf()
+
+
+    xs_out, ys_out = calculate_cuadratic_error(time,means)
+    plt.scatter(x=xs_out,y=ys_out)
+    plt.axvline(x=slope / 4, color='r', linestyle='--')
+
+
+    output_name = "observables_with_cuadratic.png"
+    output_file = os.path.join(output_dir,output_name)
+    os.makedirs(output_dir, exist_ok=True)
+    plt.savefig(output_file)
+    plt.close()
+
+
     
+
+
 
 
         
