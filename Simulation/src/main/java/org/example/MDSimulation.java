@@ -46,7 +46,7 @@ public class MDSimulation {
                     //Persisto estado del sistema
                     var event = new SimulationSnapshot(particleList, collisionEvent);
                     var data = mapper.writeValueAsString(event);
-                    if (event.collisionEvent instanceof WallCollisionEvent){
+                    if (event.collisionEvent instanceof ParticleCollisionEvent pcevent && (pcevent.getParticle1().getId() == 0 || pcevent.getParticle2().getId() == 0)){
                         if (firstEvent) {
                             writer.write(data);
                             firstEvent = false;
