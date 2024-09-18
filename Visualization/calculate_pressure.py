@@ -20,7 +20,7 @@ class PressureDataInInterval:
 
 def plot_pressure_over_time(simulation_snapshots: List[SimulationSnapshot], circle_radius: float, particle_mass: float) -> None:
     # Calculate the pressure data by time intervals
-    pressure_data_by_interval: Dict[float, PressureDataInInterval] = calculate_pressure(simulation_snapshots, circle_radius, particle_mass)
+    pressure_data_by_interval: Dict[float, PressureDataInInterval] = calculate_pressure_in_timesteps(simulation_snapshots, circle_radius, particle_mass)
 
     # Extract time intervals and corresponding pressures
     time_intervals = []
@@ -47,7 +47,7 @@ def plot_pressure_over_time(simulation_snapshots: List[SimulationSnapshot], circ
     plt.show()
 
 
-def calculate_pressure(simulation_snapshots: List[SimulationSnapshot], circle_radius: float, particle_mass: float) -> Dict[float, PressureDataInInterval]:
+def calculate_pressure_in_timesteps(simulation_snapshots: List[SimulationSnapshot], circle_radius: float, particle_mass: float) -> Dict[float, PressureDataInInterval]:
     final_time = simulation_snapshots[-1].collision_event.time
     time_interval = final_time / 15
 

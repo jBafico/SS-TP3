@@ -7,6 +7,6 @@
   "particleMass": 1,
   "maxEvents": 5000,
   "runMultipleTimes": true,
-  "velocityModulusArray": [1,2,3],
+  "velocityModulusArray": [1, 3, 6, 10],
   "rerunQty": 1
 }
