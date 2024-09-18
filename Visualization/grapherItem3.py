@@ -54,7 +54,7 @@ def reduce_items(collision_dict):
     return x_values, y_values
 
 
-def render_collision_graph(collision_dict: dict[float, int],countOnlyOnce: bool):
+def render_collision_graph(collision_dict: dict[float, int],countOnlyOnce: bool,velocity):
     # Create the directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
     
@@ -84,7 +84,7 @@ def render_collision_graph(collision_dict: dict[float, int],countOnlyOnce: bool)
     plt.ylim(0, max_y_value * 1.1)
 
     # Save the plot to a file in the output directory
-    output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}.png")
+    output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}_{velocity}.png")
     plt.savefig(output_file)
 
     plt.clf()
@@ -232,9 +232,10 @@ if __name__ == "__main__":
     json_data = load_most_recent_simulation_json("../files")
     simulation_data = parse_json_simulation(json_data)
     if config["renderOneGraph"]:
-        simulations = simulation_data[0].simulations["simulation_1"]
-        data = create_collision_graph_data(simulations,config)
-        render_collision_graph(data,config["countColisionOnlyOnce"])
+        for simulation in simulation_data:
+            simulations = simulation.simulations["simulation_1"]
+            data = create_collision_graph_data(simulations,config)
+            render_collision_graph(data,config["countColisionOnlyOnce"],simulation.global_params.velocity_modulus)
 
     if config["graphicObservables"]:
         create_observables_graphics(simulation_data,config)
