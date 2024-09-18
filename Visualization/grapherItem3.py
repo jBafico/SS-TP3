@@ -172,7 +172,7 @@ def reduce_to_slope(x_values , y_values) -> float:
     return slope
 
 
-def create_observables_graphics(simulation_data : list[SimulationOutput], config):
+def create_observables_graphics(simulation_data : list[SimulationOutput], config, countColisionOnlyOnce):
     
     #Mapeo velocidad => lista de observables para esa velocidad
     velocities_to_slopes : dict[float, list[float]] =  {}
@@ -189,11 +189,11 @@ def create_observables_graphics(simulation_data : list[SimulationOutput], config
             observables_list.append(current_observable)
         velocities_to_slopes[simulation_for_given_velocitiy.global_params.velocity_modulus] = observables_list
 
-    plot_scatter_with_error_bars(velocities_to_slopes,config)
+    plot_scatter_with_error_bars(velocities_to_slopes,config, countColisionOnlyOnce)
 
 
 
-def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]],config):
+def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]],config, countColisionOnlyOnce):
     # Extract keys (velocities) and corresponding values (list of slopes)
     velocities = np.array([x**2 for x in velocities_to_slopes.keys()])
     means = np.array([np.mean(slopes) for slopes in velocities_to_slopes.values()])
@@ -204,7 +204,10 @@ def plot_scatter_with_error_bars(velocities_to_slopes: dict[float, list[float]],
 
     # Add labels and title
     plt.xlabel('Velocidad (m\u00b2/s\u00b2)')
-    plt.ylabel('Pendiente de recta')
+    if countColisionOnlyOnce:
+        plt.ylabel('Tiempo de estabilización (s)')
+    else:
+        plt.ylabel('Pendiente de recta (colisiones/s)')
 
     # Show legend
     plt.legend()
@@ -238,7 +241,7 @@ if __name__ == "__main__":
             render_collision_graph(data,config["countColisionOnlyOnce"],simulation.global_params.velocity_modulus)
 
     if config["graphicObservables"]:
-        create_observables_graphics(simulation_data,config)
+        create_observables_graphics(simulation_data,config, config["countColisionOnlyOnce"])
 
 
     print("FINISHED")

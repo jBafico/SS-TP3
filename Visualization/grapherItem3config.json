@@ -2,6 +2,6 @@
     "renderOneGraph": true,
     "countColisionOnlyOnce": false,
     "stationaryThresholdPeriods": 20, 
-    "stationaryThresholdTolerance": 3,
+    "stationaryThresholdTolerance": 0,
     "graphicObservables": true
 }
