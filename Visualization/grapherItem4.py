@@ -2,6 +2,7 @@ import json
 import math
 
 from matplotlib import pyplot as plt
+from matplotlib.ticker import ScalarFormatter
 import numpy as np
 from classes import SimulationOutput, SimulationSnapshot
 from load_most_recent_json import load_most_recent_simulation_json
@@ -104,62 +105,69 @@ def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
     means = np.array([np.mean(slopes) for slopes in time_to_dmc.values()])
     std_devs = np.array([np.std(slopes) for slopes in time_to_dmc.values()])
 
-
-    
     # Create a scatter plot with error bars
     plt.errorbar(time, means, yerr=std_devs, fmt='o', capsize=5)
 
+    slope, minError = reduce_to_slope(time, means)
 
-    slope, minError = reduce_to_slope(time,means)
+    # Set scientific notation for the x-axis with superscript
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
 
-
-
+    # Y-axis formatting
+    ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
     # Add labels and title
-    plt.xlabel('Tiempo (s\u00b2)')
-    plt.ylabel('DCM (m)')
+    plt.xlabel('Tiempo (s)')
+    plt.ylabel('DCM (m\u00b2)')
 
     # Show legend   
     plt.legend()
 
-
-
-    
     # Save the plot to a file in the output directory
     output_name = "observables_mcd.png"
-    output_file = os.path.join(output_dir,output_name)
+    output_file = os.path.join(output_dir, output_name)
     os.makedirs(output_dir, exist_ok=True)
 
     plt.savefig(output_file)
-
     print(f"Graph observables saved to {output_file}")
-
 
     # Plot the linear function (y = slope * time) in red
     linear_fit = slope * time  # Linear function with calculated slope
     plt.plot(time, linear_fit, 'r-', label=f'Linear fit (slope={slope:.2f})')
 
-     # Save the plot to a file in the output directory
+    # Save the plot to a file in the output directory
     output_name = "observables_with_slope_mcd.png"
-    output_file = os.path.join(output_dir,output_name)
+    output_file = os.path.join(output_dir, output_name)
     os.makedirs(output_dir, exist_ok=True)
 
     plt.savefig(output_file)
-
     plt.clf()
 
 
-    xs_out, ys_out = calculate_cuadratic_error(time,means)
-    plt.scatter(x=xs_out,y=ys_out)
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+
+    # Y-axis formatting
+    ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+
+    xs_out, ys_out = calculate_cuadratic_error(time, means)
+    plt.scatter(x=xs_out, y=ys_out)
+    plt.xlabel("D (m\u00b2/s)")
+    plt.ylabel("Error (m\u00b2)")
+    
     plt.axvline(x=slope / 4, color='r', linestyle='--')
 
 
     output_name = "observables_with_cuadratic.png"
-    output_file = os.path.join(output_dir,output_name)
+    output_file = os.path.join(output_dir, output_name)
     os.makedirs(output_dir, exist_ok=True)
     plt.savefig(output_file)
     plt.close()
-
 
     
 

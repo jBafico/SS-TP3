@@ -53,28 +53,35 @@ def plot_simulation_frame_in_memory(particles, circle_radius, frame_num, collisi
 # Function to create a GIF from simulation frames in memory
 def create_simulation_gif_in_memory(data: SimulationOutput,config):
     # Read the simulation data from the JSON file
-    circle_radius = data[0]["global_params"]["wallRadius"]
-    simulations = data[0]['simulations'][0]["simulation_1"]
 
-    # List to store in-memory images
-    frames = []
+    for number, currentData in enumerate(data):
+        circle_radius = currentData["global_params"]["wallRadius"]
+        simulations = currentData['simulations'][0]["simulation_1"]
 
-    # Generate a frame for each simulation
-    for i, simulation in enumerate(simulations):
-        if i % config["everyxframes"] == 0:
-            particles = simulation['particles']
-            collision_event = simulation['collisionEvent']
-            frame_buf = plot_simulation_frame_in_memory(particles, circle_radius, i, collision_event)
-            frames.append(imageio.imread(frame_buf))  # Read the in-memory image into a format imageio can handle
+        # List to store in-memory images
+        frames = []
 
-    # Create a GIF directly from in-memory images
-    gif_buf = io.BytesIO()
-    with imageio.get_writer(gif_buf, format='GIF', mode='I', duration=3) as writer:
-        for frame in frames:
-            writer.append_data(frame)
+        # Generate a frame for each simulation
+        for i, simulation in enumerate(simulations):
+            if i % config["everyxframes"] == 0:
+                particles = simulation['particles']
+                collision_event = simulation['collisionEvent']
+                frame_buf = plot_simulation_frame_in_memory(particles, circle_radius, i, collision_event)
+                frames.append(imageio.imread(frame_buf))  # Read the in-memory image into a format imageio can handle
 
-    gif_buf.seek(0)  # Rewind the buffer to read the GIF
-    return gif_buf
+        # Create a GIF directly from in-memory images
+        gif_buf = io.BytesIO()
+        with imageio.get_writer(gif_buf, format='GIF', mode='I', duration=3) as writer:
+            for frame in frames:
+                writer.append_data(frame)
+
+        gif_buf.seek(0)  # Rewind the buffer to read the GIF
+
+        # Save or use the GIF as needed, for example, to save to a file:
+        with open(f"./simulation_output_{number+1}.gif", "wb") as f:
+            print(f"outputing gif {number + 1}")
+            f.write(gif_buf.getvalue())
+
 
 
 def main():
@@ -85,11 +92,8 @@ def main():
     json_file = load_most_recent_simulation_json("../files")  # The path to your JSON file
 
     # Generate the GIF in memory
-    gif_in_memory = create_simulation_gif_in_memory(json_file,config)
+    create_simulation_gif_in_memory(json_file,config)
 
-    # Save or use the GIF as needed, for example, to save to a file:
-    with open("./simulation_output.gif", "wb") as f:
-        f.write(gif_in_memory.getvalue())
 
 
 if __name__ == "__main__":
