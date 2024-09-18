@@ -9,6 +9,7 @@ from parse_json_simulation import parse_json_simulation
 import os
 
 output_dir = "item4Output"
+TRIES = 120
 
 def calculate_distance_to_center(prev_snapshot: SimulationSnapshot):
     big_particle = None
@@ -55,7 +56,6 @@ def obtain_mcd_graphic(simulation_data : SimulationOutput, config):
 def calculate_cuadratic_error(xs,ys):
     Y_INTERCEPT = 0
     LINEAR_FUNCTION = lambda x, m: m * x + Y_INTERCEPT
-    TRIES = 40
 
 
     max_slope = max(ys) / max(xs)
@@ -79,7 +79,6 @@ def calculate_cuadratic_error(xs,ys):
 def reduce_to_slope(xs, ys):
     Y_INTERCEPT = 0
     LINEAR_FUNCTION = lambda x, m: m * x + Y_INTERCEPT
-    TRIES = 40
 
     candidate_slope = 0
     min_error = np.inf
