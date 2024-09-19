@@ -32,16 +32,15 @@ def obtain_mcd_graphic(simulation_data : SimulationOutput, config):
     current_time = start
     
     time_slices_data : dict[str, list[float]] = {}
-    while current_time <= end:
-        time_slices_data[str(current_time)] = []
-        current_time += step
-
+   
     for simulationSnapshots in simulation_data.simulations.values():
         current_time = step
         for i in range(1,len(simulationSnapshots)):
             if simulationSnapshots[i].collision_event.time > current_time:
                 prev_snapshot = simulationSnapshots[i-1]
                 distance = calculate_distance_to_center(prev_snapshot)
+                if str(current_time) not in time_slices_data:
+                    time_slices_data[str(current_time)] = []
                 time_slices_data[str(current_time)].append(distance)
                 current_time += step
 
