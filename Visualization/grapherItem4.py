@@ -10,7 +10,7 @@ from parse_json_simulation import parse_json_simulation
 import os
 
 output_dir = "item4Output"
-TRIES = 120
+TRIES = 720
 
 def calculate_distance_to_center(prev_snapshot: SimulationSnapshot):
     big_particle = None
@@ -59,7 +59,7 @@ def calculate_cuadratic_error(xs,ys):
 
 
     max_slope = max(ys) / max(xs)
-    slopes = np.arange(0, max_slope, max_slope / TRIES)
+    slopes = np.arange(-max_slope, max_slope * 2, max_slope / TRIES)#para visualizar mejor grafico
 
     xs_out = []
     ys_out = []
