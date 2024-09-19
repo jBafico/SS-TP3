@@ -72,7 +72,7 @@ def reduce_to_slope(xs, ys):
     min_error = np.inf
 
     max_slope = max(ys) / max(xs)
-    slopes = np.arange(0, max_slope, max_slope / TRIES)
+    slopes = np.arange(0, max_slope ** 2, (max_slope ** 2) / TRIES)
 
 
 
