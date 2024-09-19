@@ -87,8 +87,8 @@ def plot_pressure_by_kinetic_energy_for_simulations(simulation_outputs: List[Sim
     ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
     # Set axis labels and grid
-    plt.xlabel('Energia Cinetica Promedio (J)')
-    plt.ylabel('Presión Promedio (N/m)')
+    plt.xlabel('Energia Cinetica (J)')
+    plt.ylabel('Presión (N/m)')
     plt.grid(True)
 
     # Format the Y-axis to show values in scientific notation

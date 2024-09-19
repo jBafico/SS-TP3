@@ -6,7 +6,7 @@ from graph_kinetic_energy import plot_pressure_by_kinetic_energy_for_simulations
 
 def main():
     # --------------- INITIAL CONFIGS ----------------------
-    plot_pressure_evolution_over_time = True
+    plot_pressure_evolution_over_time = False
     plot_pressure_by_kinetic_energy = True
 
     print("Parsing JSON data...")
