@@ -38,9 +38,9 @@ def plot_simulation_frame_in_memory(particles, circle_radius, frame_num, collisi
     ax.set_aspect('equal', 'box')
 
     # Add labels and title
-    ax.set_xlabel('X position')
-    ax.set_ylabel('Y position')
-    plt.title(f'Simulation Frame {frame_num}')
+    ax.set_xlabel('X (m)')
+    ax.set_ylabel('Y (m)')
+    plt.title(f'Numero de colision {frame_num}')
 
     # Save the frame as an in-memory image (BytesIO)
     buf = io.BytesIO()
