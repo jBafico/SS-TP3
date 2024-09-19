@@ -1,6 +1,9 @@
 from typing import List, Dict
+
+from matplotlib.ticker import ScalarFormatter
+
 from classes import Particle, SimulationSnapshot, SimulationOutput
-from calculate_pressure import calculate_pressure_in_timesteps, PressureDataInInterval
+from calculate_pressure import calculate_pressure_in_wall, PressureDataInInterval
 import matplotlib.pyplot as plt
 
 
@@ -48,7 +51,9 @@ def plot_pressure_by_kinetic_energy_for_simulations(simulation_outputs: List[Sim
         # Calculate avg pressure of 3 repetitions
         pressure_in_timesteps_by_repetition_number: Dict[str, Dict[float, PressureDataInInterval]] = {}
         for simulation_name, simulations in simulation_output.simulations.items():
-            pressure_in_timesteps_by_repetition_number[simulation_name] = calculate_pressure_in_timesteps(simulations, simulation_output.global_params.wall_radius, simulation_output.global_params.particle_mass)
+            final_time = simulations[-1].collision_event.time
+            time_interval = final_time / 15
+            pressure_in_timesteps_by_repetition_number[simulation_name] = calculate_pressure_in_wall(simulations, simulation_output.global_params.wall_radius, simulation_output.global_params.particle_mass, time_interval)
         avg_pressure_per_repetition = {
             simulation_name: sum(pressure_data.pressure for pressure_data in pressure_data_by_interval.values()) / len(pressure_data_by_interval)
             for simulation_name, pressure_data_by_interval in pressure_in_timesteps_by_repetition_number.items()
@@ -72,9 +77,18 @@ def plot_pressure_by_kinetic_energy_for_simulations(simulation_outputs: List[Sim
         initial_velocity = kinetic_energy_to_velocity[kinetic_energy]
         plt.annotate(f'v₀ = {initial_velocity}\n', (kinetic_energy, pressure), textcoords="offset points", xytext=(5, 10), ha='center')
 
+    # Set scientific notation for the x-axis with superscript
+    ax = plt.gca()
+    # X-axis formatting
+    ax.xaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+    # Y-axis formatting
+    ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+
     # Set axis labels and grid
-    plt.xlabel('Energia Cinetica Promedio (Joules)')
-    plt.ylabel('Presión Promedio (N/m)')  # Updated axis label
+    plt.xlabel('Energia Cinetica Promedio (J)')
+    plt.ylabel('Presión Promedio (N/m)')
     plt.grid(True)
 
     # Format the Y-axis to show values in scientific notation
