@@ -12,6 +12,15 @@ import os
 output_dir = "item4Output"
 TRIES = 720
 
+def SuperScriptinate(number):
+  return number.replace('0','⁰').replace('1','¹').replace('2','²').replace('3','³').replace('4','⁴').replace('5','⁵').replace('6','⁶').replace('7','⁷').replace('8','⁸').replace('9','⁹').replace('-','⁻')
+
+def sci_notation(number, sig_fig=2):
+    ret_string = "{0:.{1:d}e}".format(number, sig_fig)
+    a,b = ret_string.split("e")
+    b = int(b)         # removed leading "+" and strips leading zeros too.
+    return a + "x10" + SuperScriptinate(str(b))
+
 def calculate_distance_to_center(prev_snapshot: SimulationSnapshot):
     big_particle = None
     for particle in prev_snapshot.particles:
@@ -53,27 +62,6 @@ def obtain_mcd_graphic(simulation_data : SimulationOutput, config):
 
 
 
-def calculate_cuadratic_error(xs,ys):
-    Y_INTERCEPT = 0
-    LINEAR_FUNCTION = lambda x, m: m * x + Y_INTERCEPT
-
-
-    max_slope = max(ys) / max(xs)
-    slopes = np.arange(-max_slope, max_slope * 2, max_slope / TRIES)#para visualizar mejor grafico
-
-    xs_out = []
-    ys_out = []
-    for slope in slopes:
-        d = slope / 4
-        error = 0
-        for x, y in zip(xs, ys):
-            error += (y - LINEAR_FUNCTION(x, slope))**2
-        xs_out.append(d)
-        ys_out.append(error)
-        
-
-    return xs_out, ys_out
-    
 
 
 def reduce_to_slope(xs, ys):
@@ -86,19 +74,27 @@ def reduce_to_slope(xs, ys):
     max_slope = max(ys) / max(xs)
     slopes = np.arange(0, max_slope, max_slope / TRIES)
 
+
+
+    xs_out = []
+    ys_out = []
     for slope in slopes:
+        d = slope / 4
         error = 0
         for x, y in zip(xs, ys):
             error += (y - LINEAR_FUNCTION(x, slope))**2
         if error < min_error:
             min_error = error
             candidate_slope = slope
+        xs_out.append(d)
+        ys_out.append(error)
 
-    return candidate_slope, min_error
+    return candidate_slope, min_error , xs_out, ys_out
 
 
 
 def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
+    output_dict = {}
     # Extract keys (velocities) and corresponding values (list of slopes)
     time = np.array(list(time_to_dmc.keys()))
     means = np.array([np.mean(slopes) for slopes in time_to_dmc.values()])
@@ -107,7 +103,10 @@ def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
     # Create a scatter plot with error bars
     plt.errorbar(time, means, yerr=std_devs, fmt='o', capsize=5)
 
-    slope, minError = reduce_to_slope(time, means)
+    slope, minError ,xs_out, ys_out = reduce_to_slope(time, means)
+    output_dict["minError"] = minError
+    output_dict["bestSlope"] = slope
+    output_dict["defusionCoeficient"] = slope / 4
 
     # Set scientific notation for the x-axis with superscript
     ax = plt.gca()
@@ -135,7 +134,9 @@ def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
 
     # Plot the linear function (y = slope * time) in red
     linear_fit = slope * time  # Linear function with calculated slope
-    plt.plot(time, linear_fit, 'r-', label=f'Linear fit (slope={slope:.2f})')
+    print("SLOPE",f"{slope}")
+    plt.plot(time, linear_fit, 'r-', label=f'Recta de ajuste (y={sci_notation(slope)} t)')
+    plt.legend()
 
     # Save the plot to a file in the output directory
     output_name = "observables_with_slope_mcd.png"
@@ -154,19 +155,22 @@ def plot_scatter_with_error_bars(time_to_dmc: dict[float, list[float]]):
     ax.yaxis.set_major_formatter(ScalarFormatter(useMathText=True))
     ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
-    xs_out, ys_out = calculate_cuadratic_error(time, means)
     plt.scatter(x=xs_out, y=ys_out)
     plt.xlabel("D (m\u00b2/s)")
     plt.ylabel("Error (m\u00b2)")
     
-    plt.axvline(x=slope / 4, color='r', linestyle='--')
-
+    plt.axvline(x=slope / 4, color='r', linestyle='--',label=f"Error={sci_notation(minError)} Coeficiente Defusion = {sci_notation(slope / 4)}")
+    plt.legend()
 
     output_name = "observables_with_cuadratic.png"
     output_file = os.path.join(output_dir, output_name)
     os.makedirs(output_dir, exist_ok=True)
     plt.savefig(output_file)
     plt.close()
+
+
+    with open('./item4Output/data.json', 'w') as json_file:
+        json.dump(output_dict, json_file, indent=4)
 
     
 
