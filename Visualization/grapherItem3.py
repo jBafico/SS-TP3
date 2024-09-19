@@ -54,37 +54,42 @@ def reduce_items(collision_dict):
     return x_values, y_values
 
 
-def render_collision_graph(collision_dict: dict[float, int],countOnlyOnce: bool,velocity):
+def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce: bool, dataVelocitys):
     # Create the directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-    
-    x_values , y_values = reduce_items(collision_dict)
 
-    # Create scatter plot
-    plt.scatter(x_values, y_values)
+    max_y_value_of_all = -1
+    for current_collision_dict,color, velocity in zip(collision_dict,["red","green","blue","purple"], dataVelocitys):
+        x_values , y_values = reduce_items(current_collision_dict)
 
-    # Add a line connecting the scatter points
-    plt.plot(x_values, y_values, linestyle='-', color='blue')
+        # Create scatter plot
+        plt.scatter(x_values, y_values, color=color)
 
-    plt.xlabel("Tiempo (s)")
-    plt.ylabel("Nro Choques")
-    
-    # Display only the x-values on the x-axis
-    plt.xticks(fontsize=12)
-    
-    # Display only integer values on the y-axis
-    plt.yticks(fontsize=12)
-    
-    # Use scientific notation for each x-tick
-    plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
-    plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
-    
-    # Set the y-axis limit to allow space above the maximum value
-    max_y_value = max(y_values)
+        # Add a line connecting the scatter points
+        plt.plot(x_values, y_values, linestyle='-', color=color, label=f"v={velocity} m/s")
+
+        plt.xlabel("Tiempo (s)")
+        plt.ylabel("Nro Choques")
+
+        # Display only the x-values on the x-axis
+        plt.xticks(fontsize=12)
+
+        # Display only integer values on the y-axis
+        plt.yticks(fontsize=12)
+
+        # Use scientific notation for each x-tick
+        plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
+        plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+
+        # Set the y-axis limit to allow space above the maximum value
+        max_y_value = max(y_values)
+        if max_y_value_of_all < max_y_value:
+            max_y_value_of_all = max_y_value
     plt.ylim(0, max_y_value * 1.1)
+    plt.legend()
 
     # Save the plot to a file in the output directory
-    output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}_{velocity}.png")
+    output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}_.png")
     plt.savefig(output_file)
 
     plt.clf()
@@ -232,10 +237,15 @@ if __name__ == "__main__":
     json_data = load_most_recent_simulation_json("../files")
     simulation_data = parse_json_simulation(json_data)
     if config["renderOneGraph"]:
+        dataList = []
+        dataVelocitys = []
         for simulation in simulation_data:
             simulations = simulation.simulations["simulation_1"]
             data = create_collision_graph_data(simulations,config)
-            render_collision_graph(data,config["countColisionOnlyOnce"],simulation.global_params.velocity_modulus)
+            dataList.append(data)
+            dataVelocitys.append(simulation.global_params.velocity_modulus)
+        
+        render_collision_graph(dataList,config["countColisionOnlyOnce"], dataVelocitys)
 
     if config["graphicObservables"]:
         create_observables_graphics(simulation_data,config)
