@@ -65,28 +65,22 @@ def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce:
         # Create scatter plot
         plt.scatter(x_values, y_values, color=color)
 
-        # Add a line connecting the scatter points
-        plt.plot(x_values, y_values, linestyle='-', color=color, label=f"v={velocity} m/s")
-
-        plt.xlabel("Tiempo (s)")
-        plt.ylabel("Nro Choques")
-
-        # Display only the x-values on the x-axis
-        plt.xticks(fontsize=12)
-
-        # Display only integer values on the y-axis
-        plt.yticks(fontsize=12)
-
-        # Use scientific notation for each x-tick
-        plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
-        plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
-
-        # Set the y-axis limit to allow space above the maximum value
-        max_y_value = max(y_values)
-        if max_y_value_of_all < max_y_value:
-            max_y_value_of_all = max_y_value
-    plt.ylim(0, max_y_value * 1.1)
-    plt.legend()
+    plt.xlabel("Tiempo (s)")
+    plt.ylabel("Nro Choques")
+    
+    # Display only the x-values on the x-axis
+    plt.xticks(fontsize=12)
+    
+    # Display only integer values on the y-axis
+    plt.yticks(fontsize=12)
+    
+    # Use scientific notation for each x-tick
+    plt.gca().xaxis.set_major_formatter(mticker.ScalarFormatter(useMathText=True))
+    plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+    
+    # Set the y-axis limit to allow space above the maximum value
+    max_y_value = max(y_values)
+    plt.ylim(0, max_y_value)
 
     # Save the plot to a file in the output directory
     output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}_.png")
