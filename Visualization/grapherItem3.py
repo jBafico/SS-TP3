@@ -58,7 +58,7 @@ def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce:
     # Create the directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    min_y_value = float('inf')
+    min_of_max = float('inf')
     for current_collision_dict,color, velocity in zip(collision_dict,["red","green","blue","purple"], dataVelocitys):
         x_values , y_values = reduce_items(current_collision_dict)
 
@@ -83,9 +83,9 @@ def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce:
         plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
 
         # Set the y-axis limit to allow space above the maximum value
-        current_min = min(y_values)
-        if current_min < min_y_value:
-            min_y_value = current_min
+        current_min = max(y_values)
+        if current_min < min_of_max:
+            min_of_max = current_min
 
     plt.xlabel("Tiempo (s)")
     plt.ylabel("Nro Choques")
@@ -101,7 +101,7 @@ def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce:
     plt.gca().ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
     
     # Set the y-axis limit to allow space above the maximum value
-    plt.ylim(0, min_y_value)
+    plt.ylim(0, min_of_max)
 
     # Save the plot to a file in the output directory
     output_file = os.path.join(output_dir, f"collision_graph_countOnlyOnce_{countOnlyOnce}_.png")
