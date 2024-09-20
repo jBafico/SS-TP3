@@ -89,6 +89,9 @@ def render_collision_graph(collision_dict: list[dict[float, int]],countOnlyOnce:
 
     plt.xlabel("Tiempo (s)")
     plt.ylabel("Nro Choques")
+    plt.legend()
+
+
     
     # Display only the x-values on the x-axis
     plt.xticks(fontsize=12)
